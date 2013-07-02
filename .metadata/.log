@@ -1,0 +1,13 @@
+!SESSION 2013-07-02 13:53:46.907 -----------------------------------------------
+eclipse.buildId=v21.0.0-519525
+java.version=1.7.0_09
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Framework arguments:  -product com.android.ide.eclipse.adt.package.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product com.android.ide.eclipse.adt.package.product
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2013-07-02 13:54:22.405
+!MESSAGE An Android SDK is already being loaded. Please try again later.
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-07-02 13:58:39.333
+!MESSAGE Failed to load properties file for project 'K-HACKATHON'
