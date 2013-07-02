@@ -1,16 +1,7 @@
 package mobi.intuitit.android.mate.launcher;
-import java.io.File;
-import java.io.FileOutputStream;
-
-import mobi.intuitit.android.homepage.HomeMain;
-import mobi.intuitit.android.homepage.OwnerHome;
-
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -21,13 +12,11 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 	private final int WALLPAPER = 2;
 	private final int FLOORING = 3;
 	private final int AVATAR = 4;
-	private final int WIDGET = 5;
 	
 	private ImageButton mFurniture;
 	private ImageButton mWallpaper;
 	private ImageButton mFlooring;
 	private ImageButton mAvatar;
-	private ImageButton mWidget;
 	private ImageButton mRight;
 
 	Launcher mLauncher;
@@ -50,15 +39,13 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		mFurniture = new ImageButton(context);
 		mFlooring = new ImageButton(context);
 		mWallpaper = new ImageButton(context);
-		mAvatar = new ImageButton(context);
-		mWidget = new ImageButton(context);
+		mAvatar = new ImageButton(context);		
 		mRight = new ImageButton(context);
 
 		mFurniture.setBackgroundResource(R.drawable.icon_furniture);
 		mFlooring.setBackgroundResource(R.drawable.icon_flooring);
 		mWallpaper.setBackgroundResource(R.drawable.icon_wallpaper);
-		mAvatar.setBackgroundResource(R.drawable.icon_avatar);
-		mWidget.setBackgroundResource(R.drawable.icon_widget);
+		mAvatar.setBackgroundResource(R.drawable.icon_avatar);		
 		mRight.setBackgroundResource(R.drawable.icon_right);
 
 		addView(mFurniture);
@@ -81,11 +68,6 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		params.weight = 50;
 		mAvatar.setLayoutParams(params);
 
-		addView(mWidget);
-		params = (LayoutParams) mWidget.getLayoutParams();
-		params.weight = 50;
-		mWidget.setLayoutParams(params);
-
 		addView(mRight);
 		params = (LayoutParams) mRight.getLayoutParams();
 		params.weight = 10;
@@ -94,8 +76,7 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		mFurniture.setOnClickListener(this);
 		mWallpaper.setOnClickListener(this);
 		mFlooring.setOnClickListener(this);
-		mAvatar.setOnClickListener(this);
-		mWidget.setOnClickListener(this);
+		mAvatar.setOnClickListener(this);	
 		mRight.setOnClickListener(this);
 	}	
 
@@ -145,16 +126,7 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 				mLauncher.mObjectView.showMojbectView(AVATAR);
 			}
 			return;
-		}
-				
-		if (v.equals(mWidget)) {
-			if(mLauncher.mObjectView.mObjectViewType == WIDGET) {
-				mLauncher.mObjectView.hideMobjectView();
-			} else {
-				mLauncher.mObjectView.showMojbectView(WIDGET);
-			}
-			return; 
-		}
+		}		
 			
 		if (v.equals(mRight)) {
 			mLauncher.mObjectView.hideMobjectView();
