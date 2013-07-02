@@ -13,7 +13,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +38,6 @@ public class MLayout extends LayoutType {
 	private final int MAVATARMENU_WIDTH = 300;
 	private final int MAVATARMENU_HEIGHT = 60;
 
-	private HashMap<MobjectImageView, SpeechBubble> mSpeechBubbleMap;
-	private HashMap<MobjectImageView, MAvatarMenu> mAvatarMenuMap;
-
 	public MLayout(Context context) {
 		this(context, null);
 	}
@@ -56,169 +52,7 @@ public class MLayout extends LayoutType {
 				R.styleable.CellLayout, defStyle, 0);
 
 		a.recycle();
-
-		mSpeechBubbleMap = new HashMap<MobjectImageView, SpeechBubble>();
-		mAvatarMenuMap = new HashMap<MobjectImageView, MAvatarMenu>();
-
 		setAlwaysDrawnWithCacheEnabled(false);
-	}
-
-	public void addAvatarView(MobjectImageView view) {
-
-		ItemInfo info = (ItemInfo) view.getTag();
-
-		if (info.mobjectType == 1) {
-
-			if (!mSpeechBubbleMap.containsKey(view)) {
-				SpeechBubble mSpeechBubble = (SpeechBubble) mLauncher.mInflater
-						.inflate(R.layout.speechbubble, (ViewGroup) this, false);
-
-				mSpeechBubble.setPadding(0, 0, 0, SPEECHBUBBLE_BOTTOM_PADDING);
-				mSpeechBubble.initSpeechBubble(info, view);
-				super.addView(mSpeechBubble);
-				mSpeechBubbleMap.put(view, mSpeechBubble);
-
-				setSpeechBubbleLayout(view);
-			}
-
-			if (!mAvatarMenuMap.containsKey(view)) {
-				MAvatarMenu mAvatarMenu = (MAvatarMenu) mLauncher.mInflater
-						.inflate(R.layout.mavatarmenu, (ViewGroup) this, false);
-				mAvatarMenu.initMAvatarMenu(mLauncher, view);
-				super.addView(mAvatarMenu);
-				mAvatarMenuMap.put(view, mAvatarMenu);
-
-				setAvatarMenuLayout(view);
-			}
-		}
-	}
-
-	public void setSpeechBubbleLayout(MobjectImageView view) {
-
-		SpeechBubble sb = (SpeechBubble) mSpeechBubbleMap.get(view);
-
-		LayoutParams vLP = (LayoutParams) view.getLayoutParams();
-		LayoutParams sbLP = (LayoutParams) sb.getLayoutParams();
-
-		sbLP.width = SPEECHBUBBLE_WIDTH;
-		sbLP.height = SPEECHBUBBLE_HEIGHT;
-
-		if (vLP.cellX < (Integer) this.getWidth() / 2) {
-			sbLP.cellX = vLP.cellX;
-			sb.setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.speechbubble_l));
-		} else {
-
-			sbLP.cellX = vLP.cellX + view.getWidth() - SPEECHBUBBLE_WIDTH;
-			sb.setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.speechbubble_r));
-		}
-
-		sbLP.cellY = vLP.cellY - SPEECHBUBBLE_HEIGHT - 5;
-
-		sb.setLayoutParams(sbLP);
-	}
-
-	public void setAvatarMenuLayout(MobjectImageView view) {
-		MAvatarMenu am = (MAvatarMenu) mAvatarMenuMap.get(view);
-
-		LayoutParams vLP = (LayoutParams) view.getLayoutParams();
-		LayoutParams amLP = (LayoutParams) am.getLayoutParams();
-
-		amLP.width = MAVATARMENU_WIDTH;
-		amLP.height = MAVATARMENU_HEIGHT;
-
-		if (vLP.cellX < (Integer) this.getWidth() / 2) {
-			amLP.cellX = vLP.cellX;
-		} else {
-			amLP.cellX = vLP.cellX + view.getWidth() - MAVATARMENU_WIDTH;
-		}
-
-		amLP.cellY = vLP.cellY - MAVATARMENU_HEIGHT;
-
-		am.setLayoutParams(amLP);
-	}
-	
-	public void removeAvatarView(MobjectImageView view) {
-		SpeechBubble sp = mSpeechBubbleMap.get(view);
-		MAvatarMenu am = mAvatarMenuMap.get(view);
-		mSpeechBubbleMap.remove(view);
-		mAvatarMenuMap.remove(view);
-		
-		this.removeView(sp);
-		this.removeView(am);
-	}
-
-	public void hideAllAvatarView() {
-		for (int i = 0; i < this.getChildCount(); i++) {
-			View view = this.getChildAt(i);
-			if (view instanceof MobjectImageView) {
-				hideSpeechBubble((MobjectImageView) view);
-				hideMAvatarMenu((MobjectImageView) view);
-			}
-		}
-	}
-
-	public void hideSpeechBubble(MobjectImageView view) {
-		ItemInfo info = (ItemInfo) view.getTag();
-		if (info.contacts != null) {
-			SpeechBubble sb = (SpeechBubble) mSpeechBubbleMap.get(view);
-			sb.setVisible(INVISIBLE);
-		}
-	}
-
-	public void showSpeechBubble(MobjectImageView view) {
-		ItemInfo info = (ItemInfo) view.getTag();
-		if (info.contacts != null) {
-			SpeechBubble sb = (SpeechBubble) mSpeechBubbleMap.get(view);
-			sb.setVisible(VISIBLE);
-			sb.bringToFront();
-		}
-	}
-
-	public void setVisibleStateSpeechBubble(MobjectImageView view) {
-		if (mSpeechBubbleMap.containsKey(view)) {
-			SpeechBubble sb = (SpeechBubble) mSpeechBubbleMap.get(view);
-			if (sb.getVisibility() == INVISIBLE) {
-				showSpeechBubble(view);
-				hideMAvatarMenu(view);
-			} else
-				hideSpeechBubble(view);
-		}
-	}
-
-	public void setSpeechBubbleText(MobjectImageView view, String msg) {
-		SpeechBubble sb = (SpeechBubble) mSpeechBubbleMap.get(view);
-		sb.setBubbleText(msg);
-	}
-
-	public void hideMAvatarMenu(MobjectImageView view) {
-		ItemInfo info = (ItemInfo) view.getTag();
-		if (info.contacts != null) {
-			MAvatarMenu am = (MAvatarMenu) mAvatarMenuMap.get(view);
-			am.setVisible(INVISIBLE);
-		}
-	}
-
-	public void showMAvatarMenu(MobjectImageView view) {
-		ItemInfo info = (ItemInfo) view.getTag();
-		if (info.contacts != null) {
-			MAvatarMenu am = (MAvatarMenu) mAvatarMenuMap.get(view);
-			am.setVisible(VISIBLE);
-			am.bringToFront();
-		}
-	}
-
-	public void setVisibleStateMavatarMenu(MobjectImageView view) {
-		if (mAvatarMenuMap.containsKey(view)) {
-			MAvatarMenu am = (MAvatarMenu) mAvatarMenuMap.get(view);
-
-			if (am.getVisibility() == INVISIBLE) {
-				showMAvatarMenu(view);
-				hideSpeechBubble(view);
-			} else
-				hideMAvatarMenu(view);
-		}
 	}
 
 	@Override
@@ -239,10 +73,6 @@ public class MLayout extends LayoutType {
 		// cells
 		// per workspace screen
 		super.addView(child, index, params);
-
-		if (child instanceof MobjectImageView) {
-			addAvatarView((MobjectImageView) child);
-		}
 	}
 
 	@Override
@@ -379,11 +209,7 @@ public class MLayout extends LayoutType {
 					childBottom = childTop + lp.height;
 
 				child.layout(childLeft, childTop, childRight, childBottom);
-
-				if (mSpeechBubbleMap.containsKey(child)) {
-					setSpeechBubbleLayout((MobjectImageView) child);
-					setAvatarMenuLayout((MobjectImageView) child);
-				}
+			
 			}
 		}
 
@@ -415,8 +241,8 @@ public class MLayout extends LayoutType {
 		// if (layoutDrawed) 벽지, 바닥 바뀌면 적용을 위해
 		// return;
 
-		if (mThumbCanvas == null)	
-		initThumb(getWidth() >> 2, getHeight() >> 2);
+		if (mThumbCanvas == null)
+			initThumb(getWidth() >> 2, getHeight() >> 2);
 
 		setDrawingCacheEnabled(true);
 
@@ -476,26 +302,6 @@ public class MLayout extends LayoutType {
 			child.requestLayout();
 
 			child.bringToFront();
-
-			// --
-			if (child instanceof MobjectImageView) {
-				if (mSpeechBubbleMap.containsKey(child)) {
-					setSpeechBubbleLayout((MobjectImageView) child);
-					setAvatarMenuLayout((MobjectImageView) child);
-
-					SpeechBubble sb = (SpeechBubble) mSpeechBubbleMap
-							.get(child);
-					if (sb.getVisible() == VISIBLE)
-						sb.setVisibility(VISIBLE);
-					sb.bringToFront();
-
-					MAvatarMenu am = (MAvatarMenu) mAvatarMenuMap.get(child);
-					if (am.getVisible() == VISIBLE)
-						am.setVisibility(VISIBLE);
-					am.bringToFront();
-				}
-			}
-
 			invalidate();
 		}
 	}
@@ -517,16 +323,7 @@ public class MLayout extends LayoutType {
 	void onDragChild(View child) {
 
 		LayoutParams lp = (LayoutParams) child.getLayoutParams();
-		lp.isDragging = true;
-
-		//
-		if (mSpeechBubbleMap.containsKey(child)) {
-			SpeechBubble sb = (SpeechBubble) mSpeechBubbleMap.get(child);
-			sb.setVisibility(INVISIBLE);
-
-			MAvatarMenu ma = (MAvatarMenu) mAvatarMenuMap.get(child);
-			ma.setVisibility(INVISIBLE);
-		}
+		lp.isDragging = true;		
 	}
 
 	public int[] rectToCell(int width, int height) {

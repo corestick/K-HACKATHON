@@ -882,8 +882,10 @@ public class LauncherModel {
 						.getColumnIndexOrThrow(LauncherSettings.Favorites.MOBJECT_TYPE);
 				final int mobjectIcon = c
 						.getColumnIndex(LauncherSettings.Favorites.MOBJECT_ICON);
-				final int contacts = c
-						.getColumnIndex(LauncherSettings.Favorites.CONTACTS);
+				final int contact_num = c
+						.getColumnIndex(LauncherSettings.Favorites.CONTACT_NUM);
+				final int contact_name = c
+						.getColumnIndex(LauncherSettings.Favorites.CONTACT_NAME);
 
 				Mobject appinfo;
 				ApplicationInfo info;
@@ -904,7 +906,8 @@ public class LauncherModel {
 						case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
 						case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
 							// 처음 읽어오는부분
-							if (MobjectType == 0 || MobjectType == 1) {
+							if (MobjectType == 0 || MobjectType == 1
+									|| MobjectType == 2) {
 								appinfo = new Mobject();
 								if (c.getString(intentIndex) != null) {
 									intentDescription = c
@@ -916,20 +919,23 @@ public class LauncherModel {
 									} catch (java.net.URISyntaxException e) {
 										continue;
 									}
-								}
-								else appinfo.intent = null;
-								if(c.getString(contacts)!=null) appinfo.contacts = c.getString(contacts);
-								else appinfo.contacts =null;
+								} else
+									appinfo.intent = null;
+
+								appinfo.contact_num = c.getString(contact_num);
+								appinfo.contact_name = c
+										.getString(contact_name);
+
 								appinfo.mobjectIcon = c.getInt(mobjectIcon);
-								appinfo.title = c.getString(titleIndex);								
+								appinfo.title = c.getString(titleIndex);
 								appinfo.id = c.getLong(idIndex);
 								container = c.getInt(containerIndex);
 								appinfo.container = container;
 								appinfo.screen = c.getInt(screenIndex);
 								appinfo.cellX = c.getInt(cellXIndex);
 								appinfo.cellY = c.getInt(cellYIndex);
-								appinfo.mobjectType = c.getInt(mobjectType);								
-								
+								appinfo.mobjectType = c.getInt(mobjectType);
+
 								switch (container) {
 								case LauncherSettings.Favorites.CONTAINER_DESKTOP:
 									desktopItems.add(appinfo);
@@ -1262,7 +1268,8 @@ public class LauncherModel {
 				switch (item.itemType) {
 				case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
 				case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-					((ItemInfo) item).icon.setCallback(null);
+					if (((ItemInfo) item).icon != null)
+						((ItemInfo) item).icon.setCallback(null);
 					break;
 				}
 			}
@@ -1520,7 +1527,7 @@ public class LauncherModel {
 		values.put(LauncherSettings.Favorites.CONTAINER, item.container);
 		values.put(LauncherSettings.Favorites.CELLX, item.cellX);
 		values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-		values.put(LauncherSettings.Favorites.SCREEN, item.screen);
+		values.put(LauncherSettings.Favorites.SCREEN, item.screen);	
 
 		cr.update(LauncherSettings.Favorites.getContentUri(item.id, false),
 				values, null, null);

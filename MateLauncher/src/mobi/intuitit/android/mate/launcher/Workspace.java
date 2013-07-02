@@ -957,12 +957,7 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 
 		if (!child.isInTouchMode() && !(child instanceof Search)) {
 			return;
-		}
-
-		// --
-		if (child instanceof SpeechBubble) {
-			return;
-		}
+		}		
 
 		mDragInfo = cellInfo;
 		mDragInfo.screen = mCurrentScreen;
@@ -972,6 +967,7 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 		current.onDragChild(child);
 		mDragger.startDrag(child, this, child.getTag(),
 				DragController.DRAG_ACTION_MOVE);
+		
 		invalidate();
 	}
 
@@ -1004,7 +1000,10 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 			int yOffset, Object dragInfo) {
 
 		final LayoutType layoutType = getCurrentDropLayout();
-
+		
+		//수정모드 애니메이션 시작
+		mLauncher.modifyAnimationStart();
+	
 		if (source != this) {
 			onDropExternal(x - xOffset, y - yOffset, dragInfo, layoutType);
 		} else {
@@ -1015,13 +1014,7 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 						: mNextScreen;
 				if (index != mDragInfo.screen) {
 					final LayoutType originalLayoutType = (LayoutType) getChildAt(mDragInfo.screen);
-					originalLayoutType.removeView(cell);
-
-					// --
-					if (cell instanceof MobjectImageView) {
-						MLayout mLayout = (MLayout) originalLayoutType;
-						mLayout.removeAvatarView((MobjectImageView) cell);
-					}
+					originalLayoutType.removeView(cell);		
 
 					layoutType.addView(cell);
 				}
@@ -1572,8 +1565,6 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 	}
 
 	public void initMScreens() {
-		Log.e("RRR", "initMScreens>>");
-
 		for (int i = 0; i < this.getChildCount(); i++) {
 			LayoutType layout = (LayoutType) this.getChildAt(i);
 			if (layout instanceof MLayout) {

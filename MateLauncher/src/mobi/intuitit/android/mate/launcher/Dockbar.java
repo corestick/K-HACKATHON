@@ -1,29 +1,31 @@
 package mobi.intuitit.android.mate.launcher;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 public class Dockbar extends LinearLayout implements View.OnClickListener {
 
 	private Launcher mLauncher;
-	private ImageView[] mDockButton;
+	private ImageButton[] mDockButton;
 	private Workspace mWorkspace;
 	private View mAllAppsGrid;
-	private ImageView left;
-	
-	Bitmap captureView[]; 
+	private ImageButton left;
+
+	Bitmap captureView[];
 
 	public Dockbar(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		this.setBackgroundResource(R.drawable.dock);
+		super(context, attrs);	
 	}
 
 	public void setLauncher(Launcher launcher) {
@@ -39,19 +41,18 @@ public class Dockbar extends LinearLayout implements View.OnClickListener {
 	}
 
 	public void CreateDockbar() {
-
-		left = new ImageView(mLauncher);
+		
+		left = new ImageButton(mLauncher);
 		addView(left);
 		left.setOnClickListener(this);
 		LayoutParams param = (LayoutParams) left.getLayoutParams();
 		param.weight = 10;
 		left.setLayoutParams(param);
-		Drawable drawable4 = getResources().getDrawable(R.drawable.icon_left);
-		left.setImageDrawable(drawable4);
+		left.setBackgroundResource(R.drawable.icon_left);
 
-		mDockButton = new ImageView[4];
-		for (int i = 0; i < 4; i++) {
-			mDockButton[i] = new ImageView(mLauncher);
+		mDockButton = new ImageButton[4];
+		for (int i = 0; i < mDockButton.length; i++) {
+			mDockButton[i] = new ImageButton(mLauncher);
 			addView(mDockButton[i]);
 			mDockButton[i].setOnClickListener(this);
 			LayoutParams param1 = (LayoutParams) mDockButton[i]
@@ -59,11 +60,11 @@ public class Dockbar extends LinearLayout implements View.OnClickListener {
 			param1.weight = 50;
 			mDockButton[i].setLayoutParams(param1);
 		}
-		
-		mDockButton[0].setImageDrawable(getResources().getDrawable(R.drawable.icon_phone));
-		mDockButton[1].setImageDrawable(getResources().getDrawable(R.drawable.icon_contacts));
-		mDockButton[2].setImageDrawable(getResources().getDrawable(R.drawable.icon_apps));		
-		mDockButton[3].setImageDrawable(getResources().getDrawable(R.drawable.icon_setting));
+
+		mDockButton[0].setBackgroundResource(R.drawable.icon_phone);
+		mDockButton[1].setBackgroundResource(R.drawable.icon_contacts);
+		mDockButton[2].setBackgroundResource(R.drawable.icon_apps);		
+		mDockButton[3].setBackgroundResource(R.drawable.icon_setting);
 	}
 
 	public void showDockbar() {
@@ -92,22 +93,23 @@ public class Dockbar extends LinearLayout implements View.OnClickListener {
 			mAllAppsGrid.setVisibility(View.VISIBLE);
 			// mSpeechBubbleview.setVisibility(View.INVISIBLE);
 			return;
-		}  else if (v.equals(mDockButton[3])) {
-//			Intent intent = mLauncher.getPackageManager()
-//			.getLaunchIntentForPackage("com.android.mms");
-			
+		} else if (v.equals(mDockButton[3])) {
+			// Intent intent = mLauncher.getPackageManager()
+			// .getLaunchIntentForPackage("com.android.mms");
+
 			final Intent intent = new Intent(
 					android.provider.Settings.ACTION_SETTINGS);
 			mLauncher.startActivity(intent);
-			return;
-		} else if (v.equals(left)) {
+			return;				
+		}
+		else if (v.equals(left)) {
 			hideDockbar();
 			Launcher.modifyMode = true;
 			mLauncher.mMDockbar.showMDockbar();
-			mLauncher.modifyMode();			
-			MLayout mLayout = (MLayout) mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
-			mLayout.hideAllAvatarView();
-		}
+			mLauncher.modifyAnimationStart();
 
+			MLayout mLayout = (MLayout) mWorkspace.getChildAt(mWorkspace
+					.getCurrentScreen());			
+		}
 	}
 }

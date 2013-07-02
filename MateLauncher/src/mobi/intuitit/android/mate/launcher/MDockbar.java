@@ -29,8 +29,7 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 		this.context = context;
-		this.setPadding(2, 2, 2, 2);
-		this.setBackgroundResource(R.drawable.dock);
+		this.setPadding(2, 2, 2, 2);		
 	}
 
 	public void initMDockbar(Launcher launcher) {
@@ -126,14 +125,14 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 				mLauncher.mObjectView.showMojbectView(AVATAR);
 			}
 			return;
-		}		
-			
+		}				
+	
 		if (v.equals(mRight)) {
 			mLauncher.mObjectView.hideMobjectView();
 			hideMDockbar();
 			Launcher.modifyMode = false;
 			mLauncher.mDockbar.showDockbar();
-			mLauncher.modifyModeOff();
+			mLauncher.modifyAnimationStop();
 			return;
 		}
 	}

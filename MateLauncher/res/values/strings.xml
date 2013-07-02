@@ -36,8 +36,6 @@
     <string name="activity_not_found">Application is not installed on your phone.</string>
     <!-- List item for configuring the current wallpaper -->
     <string name="configure_wallpaper">Configure...</string>
-    <!-- Padding to LauncherHomepage Button -->
-    <string name="padding_btn">20dp</string>
 
     <!-- Folders -->
     <skip />

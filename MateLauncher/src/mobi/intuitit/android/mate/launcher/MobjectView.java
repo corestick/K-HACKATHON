@@ -80,7 +80,7 @@ public class MobjectView extends GridView implements
 		mAvatarList = new ArrayList<Mobject>();
 		mWidgetList = new ArrayList<Mobject>();
 
-		for (int i = 0; i < MImageList.getInstance().furnitureList.size(); i++) {
+		for (int i = 0; i < MImageList.getInstance().furnitureList.size(); i=i+2) {
 			Mobject mObject = new Mobject();
 			mObject.icon = getResources().getDrawable(
 					MImageList.getInstance().furnitureList.get(i));

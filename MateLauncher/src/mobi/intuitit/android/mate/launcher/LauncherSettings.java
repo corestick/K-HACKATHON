@@ -88,7 +88,8 @@ class LauncherSettings {
          * <P>Type: BLOB</P>
          */
         static final String ICON = "icon";
-        static final String CONTACTS ="contacts";
+        static final String CONTACT_NUM ="contact_num";
+        static final String CONTACT_NAME ="contact_name";
     }
 
     /**
@@ -233,6 +234,8 @@ class LauncherSettings {
         static final String MOBJECT_TYPE = "mobjectType";
         
         static final String MOBJECT_ICON = "mobjectIcon";
-        static final String CONTACTS = "contacts";
+        
+        static final String CONTACT_NUM = "contact_num";
+        static final String CONTACT_NAME = "contact_name";
     }
 }

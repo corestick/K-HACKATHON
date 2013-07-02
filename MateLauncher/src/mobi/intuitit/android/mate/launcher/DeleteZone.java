@@ -131,6 +131,8 @@ public class DeleteZone extends ImageView implements DropTarget,
 		mUninstallHandler.removeMessages(MSG_UNINSTALL);
 		final ItemInfo item = (ItemInfo) dragInfo;
 
+		mLauncher.modifyAnimationStart();
+		
 		if (item.container == -1) {
 			// Remove what dropped in the delete zone
 			removeDropped();

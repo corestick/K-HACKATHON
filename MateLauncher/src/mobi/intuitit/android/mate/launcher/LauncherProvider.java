@@ -153,7 +153,7 @@ public class LauncherProvider extends ContentProvider {
 	}
 
 	public void delete_table() {
-		//DB Table 필드 지우기
+		// DB Table 필드 지우기
 		Uri uri = Uri.parse("content://" + LauncherProvider.AUTHORITY + "/"
 				+ LauncherProvider.TABLE_FAVORITES + "/" + "?"
 				+ LauncherProvider.PARAMETER_NOTIFY + "=" + "false");
@@ -162,12 +162,12 @@ public class LauncherProvider extends ContentProvider {
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		db.delete(table, null, null);
 		sendNotify(uri);
-		
-		//화면에서 아이콘 지우기
+
+		// 화면에서 아이콘 지우기
 		final LauncherModel model = Launcher.getModel();
 		final Workspace workspace = Launcher.getWorkspace();
 		model.allRemoveDesktopItem();
-		for(int i = 0 ; i < 3 ; i++){
+		for (int i = 0; i < 3; i++) {
 			final LayoutType layoutType = (LayoutType) workspace.getChildAt(i);
 			layoutType.removeAllViews();
 		}
@@ -249,7 +249,7 @@ public class LauncherProvider extends ContentProvider {
 					+ "iconPackage TEXT," + "iconResource TEXT," + "icon BLOB,"
 					+ "uri TEXT," + "displayMode INTEGER, "
 					+ "mobjectType INTEGER, " + "mobjectIcon INTEGER,"
-					+ "contacts TEXT" + ");");
+					+ "contact_num TEXT, contact_name" + ");");
 
 			db.execSQL("CREATE TABLE gestures (" + "_id INTEGER PRIMARY KEY,"
 					+ "title TEXT," + "intent TEXT," + "itemType INTEGER,"
@@ -342,8 +342,10 @@ public class LauncherProvider extends ContentProvider {
 					.getColumnIndexOrThrow(LauncherSettings.Favorites.MOBJECT_ICON);
 			final int mobjectType = c
 					.getColumnIndexOrThrow(LauncherSettings.Favorites.MOBJECT_TYPE);
-			final int contacts = c
-					.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTACTS);
+			final int contact_num = c
+					.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTACT_NUM);
+			final int contact_name = c
+					.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTACT_NAME);
 
 			ContentValues[] rows = new ContentValues[c.getCount()];
 			int i = 0;
@@ -381,8 +383,11 @@ public class LauncherProvider extends ContentProvider {
 						c.getInt(mobjectIcon));
 				values.put(LauncherSettings.Favorites.MOBJECT_TYPE,
 						c.getInt(mobjectType));
-				values.put(LauncherSettings.Favorites.CONTACTS,
-						c.getInt(contacts));
+				values.put(LauncherSettings.Favorites.CONTACT_NUM,
+						c.getInt(contact_num));
+				values.put(LauncherSettings.Favorites.CONTACT_NAME,
+						c.getInt(contact_name));
+
 				rows[i++] = values;
 			}
 

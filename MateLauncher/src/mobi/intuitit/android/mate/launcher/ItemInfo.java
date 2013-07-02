@@ -106,7 +106,9 @@ class ItemInfo {
     
     int mobjectType = -1; // 0 = 가구, 1 = 아바타
     int mobjectIcon = -1;
-    String contacts;
+    
+    String contact_num;
+    String contact_name;
 
     ItemInfo() {
     }
@@ -144,8 +146,9 @@ class ItemInfo {
     		values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
     		String uri = null;
     		values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
-    		String PhoneNum = null;
-    		values.put(LauncherSettings.BaseLauncherColumns.CONTACTS, PhoneNum);
+    		
+    		values.put(LauncherSettings.BaseLauncherColumns.CONTACT_NUM, contact_num);
+    		values.put(LauncherSettings.BaseLauncherColumns.CONTACT_NAME, contact_name);
         }
     }
 
