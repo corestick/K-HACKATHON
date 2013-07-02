@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+        Copyright (C) 2007 The Android Open Source Project Licensed under the Apache License,
+        Version 2.0 (the "License"); you may not use this file except in compliance with the
+        License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+        Unless required by applicable law or agreed to in writing, software distributed under the
+        License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+        either express or implied. See the License for the specific language governing permissions
+        and limitations under the License.
+
+-->
+
+<mobi.intuitit.android.mate.launcher.DragLayer xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/mobi.intuitit.android.mate.launcher"
+    android:id="@+id/drag_layer"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <!-- The workspace contains 3 screens of cells -->
+
+    <mobi.intuitit.android.mate.launcher.Workspace
+        android:id="@+id/workspace"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        launcher:defaultScreen="1" >
+
+        <include
+            android:id="@+id/cell1"
+            layout="@layout/workspace_mscreen" />
+        <include
+            android:id="@+id/cell2"
+            layout="@layout/workspace_mscreen" />
+
+        <include
+            android:id="@+id/cell3"
+            layout="@layout/workspace_mscreen" />
+    </mobi.intuitit.android.mate.launcher.Workspace>
+
+    <mobi.intuitit.android.mate.launcher.Dockbar
+        android:id="@+id/dockbar"
+        android:layout_width="fill_parent"
+        android:layout_height="65dip"
+        android:layout_gravity="bottom"
+        android:visibility="visible" />
+    
+    <mobi.intuitit.android.mate.launcher.MDockbar
+        android:id="@+id/mdockbar"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="65dip"
+        android:layout_gravity="bottom"
+        android:visibility="invisible" />
+
+    <mobi.intuitit.android.mate.launcher.AllAppsGridView
+        android:id="@id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@drawable/grid_selector"
+        android:numColumns="4"
+        android:scrollbarStyle="outsideInset"
+        android:verticalSpacing="10dip"
+        android:visibility="gone"
+        launcher:texture="@drawable/pattern_carbon_fiber_dark" />
+
+    <mobi.intuitit.android.mate.launcher.DeleteZone
+        android:id="@+id/delete_zone"
+        android:layout_width="fill_parent"
+        android:layout_height="49dip"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@drawable/delete_zone_selector"
+        android:scaleType="center"
+        android:src="@drawable/ic_delete"
+        android:visibility="invisible"
+        launcher:direction="horizontal" />
+    <mobi.intuitit.android.mate.launcher.MobjectView
+        android:id="@+id/objectview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="65dip"
+        android:numColumns="4"
+        android:verticalSpacing="10dip"
+        android:visibility="invisible"
+        launcher:texture="@drawable/pattern_carbon_fiber_dark" />
+    <mobi.intuitit.android.mate.launcher.ScreenIndicator
+        android:id="@+id/screen_indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="3dp"
+        android:layout_gravity="center|top" />
+
+    <ViewStub
+        android:id="@+id/stub_screen_switcher"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:inflatedId="@+id/screen_switcher"
+        android:layout="@layout/screen_switcher" />
+
+</mobi.intuitit.android.mate.launcher.DragLayer>
