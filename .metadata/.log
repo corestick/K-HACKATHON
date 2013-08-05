@@ -135,3 +135,9 @@ java.lang.NullPointerException
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:584)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1438)
 	at org.eclipse.equinox.launcher.Main.main(Main.java:1414)
+
+!ENTRY com.google.gdt.eclipse.suite 1 0 2013-08-05 17:18:12.720
+!MESSAGE Registering: com.google.appengine.eclipse.sdkbundle_1.7.5
+
+!ENTRY com.google.gdt.eclipse.suite 1 0 2013-08-05 17:18:12.809
+!MESSAGE Registering: com.google.gwt.eclipse.sdkbundle_2.5.1
