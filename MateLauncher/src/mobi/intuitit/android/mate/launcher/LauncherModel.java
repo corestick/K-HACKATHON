@@ -886,6 +886,8 @@ public class LauncherModel {
 						.getColumnIndex(LauncherSettings.Favorites.CONTACT_NUM);
 				final int contact_name = c
 						.getColumnIndex(LauncherSettings.Favorites.CONTACT_NAME);
+				final int icon_mirror = c
+						.getColumnIndex(LauncherSettings.Favorites.ICON_MIRROR);
 
 				Mobject appinfo;
 				ApplicationInfo info;
@@ -906,8 +908,8 @@ public class LauncherModel {
 						case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
 						case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
 							// 처음 읽어오는부분
-							if (MobjectType == 0 || MobjectType == 1
-									|| MobjectType == 2) {
+							if (MobjectType == MGlobal.MOBJECTTYPE_FURNITURE || MobjectType == MGlobal.MOBJECTTYPE_AVATAR
+									|| MobjectType == MGlobal.MOBJECTTYPE_WIDGET) {
 								appinfo = new Mobject();
 								if (c.getString(intentIndex) != null) {
 									intentDescription = c
@@ -935,7 +937,8 @@ public class LauncherModel {
 								appinfo.cellX = c.getInt(cellXIndex);
 								appinfo.cellY = c.getInt(cellYIndex);
 								appinfo.mobjectType = c.getInt(mobjectType);
-
+								appinfo.icon_mirror = c.getInt(icon_mirror);								
+								
 								switch (container) {
 								case LauncherSettings.Favorites.CONTAINER_DESKTOP:
 									desktopItems.add(appinfo);
@@ -985,7 +988,8 @@ public class LauncherModel {
 
 									info.mobjectType = c.getInt(mobjectType);
 									info.mobjectIcon = c.getInt(mobjectIcon);
-
+									info.icon_mirror = c.getInt(icon_mirror);
+									
 									switch (container) {
 									case LauncherSettings.Favorites.CONTAINER_DESKTOP:
 										desktopItems.add(info);
@@ -1014,6 +1018,8 @@ public class LauncherModel {
 							folderInfo.screen = c.getInt(screenIndex);
 							folderInfo.cellX = c.getInt(cellXIndex);
 							folderInfo.cellY = c.getInt(cellYIndex);
+//							folderInfo.mobjectIcon = c.getInt(mobjectIcon);
+//							folderInfo.mobjectType = c.getInt(mobjectType);
 
 							switch (container) {
 							case LauncherSettings.Favorites.CONTAINER_DESKTOP:

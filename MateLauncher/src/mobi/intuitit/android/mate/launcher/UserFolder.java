@@ -40,9 +40,9 @@ public class UserFolder extends Folder implements DropTarget {
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
-        final ApplicationInfo item = (ApplicationInfo) dragInfo;
+        final ItemInfo item = (ItemInfo) dragInfo;
         //noinspection unchecked
-        ((ArrayAdapter<ApplicationInfo>) mContent.getAdapter()).add((ApplicationInfo) dragInfo);
+        ((ArrayAdapter<ItemInfo>) mContent.getAdapter()).add((ItemInfo) dragInfo);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, 0, 0);
     }
 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import mobi.intuitit.android.widget.WidgetCellLayout;
 import mobi.intuitit.android.widget.WidgetSpace;
+import mobi.intutit.android.weatherwidget.WeatherWidgetService;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
@@ -40,7 +41,6 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.Scroller;
 import android.widget.TextView;
@@ -409,10 +409,10 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 				.getLayoutParams();
 		if (lp == null) {
 			lp = new LayoutType.LayoutParams(x, y, spanX, spanY);
-		} else {
-
+		} else {			
 			lp.cellX = x;
 			lp.cellY = y;
+			
 			// -- MLayout
 			if (group instanceof CellLayout) {
 				lp.cellHSpan = spanX;
@@ -420,6 +420,11 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 			}
 		}
 
+		if(child instanceof Folder) {
+			lp.width = 100;
+			lp.height = 100;
+		}
+		
 		group.addView(child, insert ? 0 : -1, lp);
 		if (!(child instanceof Folder)) { // / -
 			child.setOnLongClickListener(mLongClickListener);
@@ -957,7 +962,12 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 
 		if (!child.isInTouchMode() && !(child instanceof Search)) {
 			return;
-		}		
+		}
+
+		// --
+		if (child instanceof SpeechBubble) {
+			return;
+		}
 
 		mDragInfo = cellInfo;
 		mDragInfo.screen = mCurrentScreen;
@@ -967,7 +977,7 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 		current.onDragChild(child);
 		mDragger.startDrag(child, this, child.getTag(),
 				DragController.DRAG_ACTION_MOVE);
-		
+
 		invalidate();
 	}
 
@@ -1000,10 +1010,10 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 			int yOffset, Object dragInfo) {
 
 		final LayoutType layoutType = getCurrentDropLayout();
-		
-		//수정모드 애니메이션 시작
+
+		// 수정모드 애니메이션 시작
 		mLauncher.modifyAnimationStart();
-	
+
 		if (source != this) {
 			onDropExternal(x - xOffset, y - yOffset, dragInfo, layoutType);
 		} else {
@@ -1014,7 +1024,13 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 						: mNextScreen;
 				if (index != mDragInfo.screen) {
 					final LayoutType originalLayoutType = (LayoutType) getChildAt(mDragInfo.screen);
-					originalLayoutType.removeView(cell);		
+					originalLayoutType.removeView(cell);
+
+					// --
+					if (cell instanceof MobjectImageView) {
+						MLayout mLayout = (MLayout) originalLayoutType;
+						mLayout.removeAvatarView((MobjectImageView) cell);
+					}
 
 					layoutType.addView(cell);
 				}
@@ -1064,14 +1080,14 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 			LayoutType layoutType, boolean insertAtFirst) {
 		// Drag from somewhere else
 		ItemInfo info = (ItemInfo) dragInfo;
-
+		
 		View view = null;
 
 		switch (info.itemType) {
 		case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
 		case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
 			if (info instanceof ApplicationInfo) {
-				Log.e("RRR", "onDropExternal, ApplicationInfo");
+//				Log.e("RRR", "onDropExternal, ApplicationInfo");
 				if (info.container == NO_ID) {
 					// Came from all apps -- make a copy
 					info = new ApplicationInfo((ApplicationInfo) info);
@@ -1079,24 +1095,22 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 				view = mLauncher.createShortcut(R.layout.application,
 						layoutType, (ApplicationInfo) info);
 			} else if (info instanceof Mobject) {
-				Log.e("RRR", "onDropExternal, Mobject");
+//				Log.e("RRR", "onDropExternal, Mobject");
 				info = new Mobject((Mobject) info);
 
 				view = mLauncher.createShortcut(R.layout.mobject, layoutType,
 						(Mobject) info);
 			}
-
 			break;
-		case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
-			view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
-					(ViewGroup) getChildAt(mCurrentScreen),
-					((UserFolderInfo) info));
-			break;
+//		case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+//			view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
+//					(ViewGroup) getChildAt(mCurrentScreen),
+//					((UserFolderInfo) info));
+//			break;
 		default:
 			throw new IllegalStateException("Unknown item type: "
 					+ info.itemType);
 		}
-
 		layoutType.addView(view, insertAtFirst ? 0 : -1);
 		view.setOnLongClickListener(mLongClickListener);
 
@@ -1105,7 +1119,6 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 				.getLayoutParams();
 		if (layoutType instanceof MLayout) {
 			layoutType.onDropChild(view, x, y);
-
 		} else {
 
 			mTargetCell = estimateDropCell(x, y, 1, 1, view, layoutType,
@@ -1118,6 +1131,11 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 		LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
 				LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen,
 				lp.cellX, lp.cellY);
+		
+		if(info.mobjectType == MGlobal.MOBJECTTYPE_WIDGET){
+			Log.e("widget", "widget");
+			mLauncher.widgetStart(); // 날씨위젯 서비스 시작
+		}
 	}
 
 	/**

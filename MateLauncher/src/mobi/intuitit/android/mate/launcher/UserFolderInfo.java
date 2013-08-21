@@ -45,6 +45,7 @@ class UserFolderInfo extends FolderInfo {
     @Override
     void onAddToDatabase(ContentValues values) { 
         super.onAddToDatabase(values);
-        values.put(LauncherSettings.Favorites.TITLE, title.toString());
+        values.put(LauncherSettings.Favorites.TITLE, "Folder");
+//        values.put(LauncherSettings.Favorites.TITLE, title.toString());
     }
 }

@@ -106,20 +106,21 @@ public class AllAppsGridView extends GridView implements
 		mLauncher.startActivitySafely(app.intent);
 	}
 
-	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-		return false;
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
+//		return false;
 
-		// if (!view.isInTouchMode()) {
-		// return false;
-		// }
+		if (!view.isInTouchMode()) {
+			return false;
+		}
 
-		// ItemInfo app = (ItemInfo) parent.getItemAtPosition(position);
-		// app = new ItemInfo(app);
-		//
-		// mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
-		// mLauncher.closeAllApplications();
-		//
-		// return true;
+		ItemInfo app = (ItemInfo) parent.getItemAtPosition(position);
+		app = new ItemInfo(app);
+
+		mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
+		mLauncher.closeAllApplications();
+
+		return true;
 	}
 
 	public void setDragger(DragController dragger) {

@@ -90,6 +90,8 @@ class LauncherSettings {
         static final String ICON = "icon";
         static final String CONTACT_NUM ="contact_num";
         static final String CONTACT_NAME ="contact_name";
+        static final String ICON_MIRROR ="icon_mirror";
+        
     }
 
     /**
@@ -237,5 +239,6 @@ class LauncherSettings {
         
         static final String CONTACT_NUM = "contact_num";
         static final String CONTACT_NAME = "contact_name";
+        static final String ICON_MIRROR = "icon_mirror";
     }
 }

@@ -23,11 +23,12 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 /**
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
-public class FolderIcon extends BubbleTextView implements DropTarget {
+public class FolderIcon extends ImageView implements DropTarget {
     private UserFolderInfo mInfo;
     private Launcher mLauncher;
     private Drawable mCloseIcon;
@@ -45,12 +46,15 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
             UserFolderInfo folderInfo) {
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
-
-        final Resources resources = launcher.getResources();
-        Drawable d = resources.getDrawable(R.drawable.ic_launcher_folder);
-        d = Utilities.createIconThumbnail(d, launcher);
-        icon.mCloseIcon = d;
-        icon.mOpenIcon = resources.getDrawable(R.drawable.ic_launcher_folder_open);
+		icon.setBackgroundResource(MImageList.getInstance().getIcon(
+				folderInfo.mobjectType, folderInfo.mobjectIcon));
+//        final Resources resources = launcher.getResources();
+//        Drawable d = resources.getDrawable(R.drawable.m_furniture_23);
+//        d = Utilities.createIconThumbnail(d, launcher);
+//        icon.mCloseIcon = d;
+//        icon.mCloseIcon = d;
+//        icon.mOpenIcon = d;
+//        icon.mOpenIcon = resources.getDrawable(R.drawable.ic_launcher_folder_open);
 //        icon.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
 //        icon.setText(folderInfo.title);
         icon.setTag(folderInfo);
@@ -60,6 +64,21 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
         
         return icon;
     }
+    
+	public void initMobjectView() {
+
+//		setFocusable(true);
+//		mBackground = getBackground();
+//		setBackgroundDrawable(null);
+//		mBackground.setCallback(this);
+
+		ItemInfo info = (ItemInfo) getTag();
+		this.setBackgroundResource(MImageList.getInstance().getIcon(
+				info.mobjectType, info.mobjectIcon));
+		
+//		this.setCompoundDrawablesWithIntrinsicBounds(0, MImageList.getInstance().getIcon(
+//				info.mobjectType, info.mobjectIcon), 0, 0);
+	}
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             Object dragInfo) {

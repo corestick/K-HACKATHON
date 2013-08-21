@@ -8,15 +8,11 @@ import android.widget.LinearLayout;
 
 public class MDockbar extends LinearLayout implements View.OnClickListener {
 	
-	private final int FURNITURE = 1;
-	private final int WALLPAPER = 2;
-	private final int FLOORING = 3;
-	private final int AVATAR = 4;
-	
 	private ImageButton mFurniture;
 	private ImageButton mWallpaper;
 	private ImageButton mFlooring;
 	private ImageButton mAvatar;
+	private ImageButton mWidget;
 	private ImageButton mRight;
 
 	Launcher mLauncher;
@@ -29,7 +25,8 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 		this.context = context;
-		this.setPadding(2, 2, 2, 2);		
+		this.setPadding(2, 2, 2, 2);
+		this.setBackgroundResource(R.drawable.dock);
 	}
 
 	public void initMDockbar(Launcher launcher) {
@@ -38,13 +35,15 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		mFurniture = new ImageButton(context);
 		mFlooring = new ImageButton(context);
 		mWallpaper = new ImageButton(context);
-		mAvatar = new ImageButton(context);		
+		mAvatar = new ImageButton(context);
+		mWidget = new ImageButton(context);
 		mRight = new ImageButton(context);
 
 		mFurniture.setBackgroundResource(R.drawable.icon_furniture);
 		mFlooring.setBackgroundResource(R.drawable.icon_flooring);
 		mWallpaper.setBackgroundResource(R.drawable.icon_wallpaper);
-		mAvatar.setBackgroundResource(R.drawable.icon_avatar);		
+		mAvatar.setBackgroundResource(R.drawable.icon_avatar);
+		mWidget.setBackgroundResource(R.drawable.icon_widget);
 		mRight.setBackgroundResource(R.drawable.icon_right);
 
 		addView(mFurniture);
@@ -67,6 +66,11 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		params.weight = 50;
 		mAvatar.setLayoutParams(params);
 
+		addView(mWidget);
+		params = (LayoutParams) mWidget.getLayoutParams();
+		params.weight = 50;
+		mWidget.setLayoutParams(params);
+
 		addView(mRight);
 		params = (LayoutParams) mRight.getLayoutParams();
 		params.weight = 10;
@@ -75,7 +79,8 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		mFurniture.setOnClickListener(this);
 		mWallpaper.setOnClickListener(this);
 		mFlooring.setOnClickListener(this);
-		mAvatar.setOnClickListener(this);	
+		mAvatar.setOnClickListener(this);
+		mWidget.setOnClickListener(this);
 		mRight.setOnClickListener(this);
 	}	
 
@@ -91,42 +96,51 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		// TODO Auto-generated method stubs
 
 		if (v.equals(mFurniture)) {
-			if (mLauncher.mObjectView.mObjectViewType == FURNITURE) {
+			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_FURNITURE) {
 				mLauncher.mObjectView.hideMobjectView();
 			} else {
-				mLauncher.mObjectView.showMojbectView(FURNITURE);
+				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_FURNITURE);
 			}
 			return;
 		}
 
 		if (v.equals(mWallpaper)) {
 
-			if (mLauncher.mObjectView.mObjectViewType == WALLPAPER) {
+			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_WALLPAPER) {
 				mLauncher.mObjectView.hideMobjectView();
 			} else {
-				mLauncher.mObjectView.showMojbectView(WALLPAPER);
+				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_WALLPAPER);
 			}
 			return;
 		}
 
 		if (v.equals(mFlooring)) {
-			if (mLauncher.mObjectView.mObjectViewType == FLOORING) {
+			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_FLOORING) {
 				mLauncher.mObjectView.hideMobjectView();
 			} else {
-				mLauncher.mObjectView.showMojbectView(FLOORING);
+				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_FLOORING);
 			}
 			return;
 		}
 
 		if (v.equals(mAvatar)) {
-			if (mLauncher.mObjectView.mObjectViewType == AVATAR) {
+			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_AVATAR) {
 				mLauncher.mObjectView.hideMobjectView();
 			} else {
-				mLauncher.mObjectView.showMojbectView(AVATAR);
+				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_AVATAR);
 			}
 			return;
-		}				
-	
+		}
+				
+		if (v.equals(mWidget)) {
+			if(mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_WIDGET) {
+				mLauncher.mObjectView.hideMobjectView();
+			} else {
+				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_WIDGET);
+			}
+			return; 
+		}
+			
 		if (v.equals(mRight)) {
 			mLauncher.mObjectView.hideMobjectView();
 			hideMDockbar();

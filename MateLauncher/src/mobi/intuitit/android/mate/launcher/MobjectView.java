@@ -2,6 +2,7 @@ package mobi.intuitit.android.mate.launcher;
 
 import java.util.ArrayList;
 
+import android.R.bool;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -18,14 +19,7 @@ public class MobjectView extends GridView implements
 		AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
 		DragSource {
 
-	private final int HIDE = 0;
-	private final int FURNITURE = 1;
-	private final int WALLPAPER = 2;
-	private final int FLOORING = 3;
-	private final int AVATAR = 4;
-	private final int WIDGET = 5;
-
-	public int mObjectViewType = HIDE;
+	public int mObjectViewType = MGlobal.MDOCKBAR_MENU_HIDE;
 
 	MobjectAdapter mFurnitureAdapter;
 	MobjectAdapter mWallpaperAdapter;
@@ -45,7 +39,7 @@ public class MobjectView extends GridView implements
 	private Paint mPaint;
 	private int mTextureWidth;
 	private int mTextureHeight;
-
+	
 	public MobjectView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -80,11 +74,11 @@ public class MobjectView extends GridView implements
 		mAvatarList = new ArrayList<Mobject>();
 		mWidgetList = new ArrayList<Mobject>();
 
-		for (int i = 0; i < MImageList.getInstance().furnitureList.size(); i=i+2) {
+		for (int i = 0; i < MImageList.getInstance().furnitureList.size(); i++) {
 			Mobject mObject = new Mobject();
 			mObject.icon = getResources().getDrawable(
 					MImageList.getInstance().furnitureList.get(i));
-			mObject.mobjectType = 0;
+			mObject.mobjectType = MGlobal.MOBJECTTYPE_FURNITURE;
 			mObject.mobjectIcon = i;
 						
 			mFurnitureList.add(mObject);
@@ -113,7 +107,7 @@ public class MobjectView extends GridView implements
 			Mobject mObject = new Mobject();
 			mObject.icon = getResources().getDrawable(
 					MImageList.getInstance().avatarList.get(i));
-			mObject.mobjectType = 1;
+			mObject.mobjectType = MGlobal.MOBJECTTYPE_AVATAR;
 			mObject.mobjectIcon = i;
 			
 			mAvatarList.add(mObject);
@@ -122,9 +116,10 @@ public class MobjectView extends GridView implements
 		
 		for (int i = 0; i < MImageList.getInstance().widgetList.size(); i++) {
 			Mobject mObject = new Mobject();
+			
 			mObject.icon = getResources().getDrawable(MImageList.getInstance().widgetList.get(i));
 		
-			mObject.mobjectType = 2;
+			mObject.mobjectType = MGlobal.MOBJECTTYPE_WIDGET;
 			mObject.mobjectIcon = i;
 						
 			mWidgetList.add(mObject);
@@ -192,11 +187,11 @@ public class MobjectView extends GridView implements
 		}
 		if (!isDraggable())
 			return false;
-		
-		Mobject app = (Mobject) parent.getItemAtPosition(position);
+			
+		Mobject app = (Mobject) parent.getItemAtPosition(position);			
 		app = new Mobject(app);
-
 		mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
+		
 		mLauncher.closeObjectView();
 		return true;
 	}
@@ -205,7 +200,7 @@ public class MobjectView extends GridView implements
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
 
-		if (mObjectViewType == WALLPAPER) {
+		if (mObjectViewType == MGlobal.MDOCKBAR_MENU_WALLPAPER) {
 			Workspace mWorkspace = mLauncher.getWorkspace();
 			
 			MLayout mLayout = (MLayout) mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
@@ -215,7 +210,7 @@ public class MobjectView extends GridView implements
 			hideMobjectView();
 		}
 
-		if (mObjectViewType == FLOORING) {
+		if (mObjectViewType == MGlobal.MDOCKBAR_MENU_FLOORING) {
 			Workspace mWorkspace = mLauncher.getWorkspace();
 			
 			MLayout mLayout = (MLayout) mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
@@ -228,25 +223,25 @@ public class MobjectView extends GridView implements
 	}
 
 	public void hideMobjectView() {
-		mObjectViewType = HIDE;
+		mObjectViewType = MGlobal.MDOCKBAR_MENU_HIDE;
 		this.setVisibility(View.GONE);
 	}
 
 	public void showMojbectView(int argType) {
 		switch (argType) {
-		case FURNITURE:
+		case MGlobal.MDOCKBAR_MENU_FURNITURE:
 			setAdapter(mFurnitureAdapter);
 			break;
-		case WALLPAPER:
+		case MGlobal.MDOCKBAR_MENU_WALLPAPER:
 			setAdapter(mWallpaperAdapter);
 			break;
-		case FLOORING:
+		case MGlobal.MDOCKBAR_MENU_FLOORING:
 			setAdapter(mFlooringAdapter);
 			break;
-		case AVATAR:
+		case MGlobal.MDOCKBAR_MENU_AVATAR:
 			setAdapter(mAvatarAdapter);
 			break;
-		case WIDGET:
+		case MGlobal.MDOCKBAR_MENU_WIDGET:
 			setAdapter(mWidgetAdapter);
 			break;
 		}
@@ -256,12 +251,12 @@ public class MobjectView extends GridView implements
 
 	public boolean isDraggable() {
 		switch (mObjectViewType) {
-		case FURNITURE:
-		case AVATAR:
-		case WIDGET:
+		case MGlobal.MDOCKBAR_MENU_FURNITURE:
+		case MGlobal.MDOCKBAR_MENU_AVATAR:
+		case MGlobal.MDOCKBAR_MENU_WIDGET:
 			return true;
-		case WALLPAPER:
-		case FLOORING:
+		case MGlobal.MDOCKBAR_MENU_WALLPAPER:
+		case MGlobal.MDOCKBAR_MENU_FLOORING:
 			return false;
 		}
 		return false;

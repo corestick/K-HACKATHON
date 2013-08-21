@@ -20,10 +20,14 @@ import static android.util.Log.d;
 import static android.util.Log.e;
 import static android.util.Log.w;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.text.Collator;
@@ -36,6 +40,11 @@ import java.util.List;
 import mobi.intuitit.android.content.LauncherIntent;
 import mobi.intuitit.android.content.LauncherMetadata;
 import mobi.intuitit.android.mate.launcher.ScreenLayout.onScreenChangeListener;
+import mobi.intutit.android.weatherwidget.WeatherWidgetService;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -55,6 +64,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
@@ -69,18 +79,19 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
+import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.LiveFolders;
-import android.support.v4.app.NotificationCompat.Action;
 import android.telephony.SmsManager;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -110,6 +121,7 @@ import android.widget.ListView;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 /**
  * Default launcher application.
@@ -245,8 +257,11 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private ModifyHandler mModifyHandler = null; // 수정모드에 쓰는 핸들러;
 	private ModifyThread mModifyThread = null;
 
+	private final Logger log4j = Logger.getLogger(Launcher.class);
+
 	@Override
 	protected void onStart() {
+
 		Log.e("Launcher-Start", "Start");
 		if (DOWNLOAR_VIEW) {
 			Log.e("Launcher-Start-change", "Start-change");
@@ -271,6 +286,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		if (PROFILE_STARTUP) {
 			android.os.Debug.startMethodTracing("/sdcard/launcher");
 		}
+
+		// Log4j 설정 //
+		configureLogger();
 
 		checkForLocaleChange();
 		setWallpaperDimension();
@@ -797,13 +815,11 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 			return favorite;
 		} else {
-			MobjectTextView favorite = (MobjectTextView) mInflater.inflate(
+			MobjectImageView favorite = (MobjectImageView) mInflater.inflate(
 					layoutResId, parent, false);
 			favorite.setTag(info);
 			favorite.setOnClickListener(this);
-
 			favorite.initMobjectView();
-			favorite.setTitle(modifyMode);
 
 			return favorite;
 		}
@@ -1952,12 +1968,12 @@ public final class Launcher extends Activity implements View.OnClickListener,
 						item.cellY, 1, 1, !desktopLocked);
 				break;
 			case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
-				final FolderIcon newFolder = FolderIcon.fromXml(
-						R.layout.folder_icon, this, (ViewGroup) workspace
-								.getChildAt(workspace.getCurrentScreen()),
-						(UserFolderInfo) item);
-				workspace.addInScreen(newFolder, item.screen, item.cellX,
-						item.cellY, 1, 1, !desktopLocked);
+				// final FolderIcon newFolder = FolderIcon.fromXml(
+				// R.layout.folder_icon, this, (ViewGroup) workspace
+				// .getChildAt(workspace.getCurrentScreen()),
+				// (UserFolderInfo) item);
+				// workspace.addInScreen(newFolder, item.screen, item.cellX,
+				// item.cellY, 1, 1, !desktopLocked);
 				break;
 			case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
 				final FolderIcon newLiveFolder = LiveFolderIcon.fromXml(
@@ -2172,32 +2188,36 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			} else if (tag instanceof FolderInfo) {
 				handleFolderClick((FolderInfo) tag);
 			} else if (tag instanceof Mobject) {
-				if (((Mobject) tag).mobjectType == 0) {
+				if (((Mobject) tag).mobjectType == MGlobal.MOBJECTTYPE_FURNITURE) {
 					final Intent intent = ((Mobject) tag).intent;
 					startActivitySafely(intent);
 				} else {
-					ItemInfo info = (ItemInfo)tag;
-					Intent intent = new Intent(Intent.ACTION_CALL);
-					intent.setData(Uri.parse("tel:"+info.contact_num));
-					mLauncher.startActivity(intent);
+					MLayout mLayout = (MLayout) v.getParent();
+					mLayout.setVisibleStateMavatarMenu((MobjectImageView) v);
 				}
 			}
 		} else {
 			Object tag = v.getTag();
 			if (tag instanceof Mobject) {
-				if (((Mobject) tag).mobjectType == 0) {
+
+				switch (((Mobject) tag).mobjectType) {
+				case MGlobal.MOBJECTTYPE_FURNITURE:
 					SelectView = v;
 					Function_dialog function_dialog = new Function_dialog(this,
 							v);
 					function_dialog.setCancelable(true);
-					function_dialog.show();					
-				} else {
+					function_dialog.show();
+					break;
+				case MGlobal.MOBJECTTYPE_AVATAR:
 					// 전화번호 얻어오기 커스텀 다이얼로그
 					SelectView = v;
 					clickedInfo = tag;
 					createThreadAndDialog();
+					break;
+				case MGlobal.MOBJECTTYPE_WIDGET:
+
+					break;
 				}
-				
 			}
 		}
 	}
@@ -2305,8 +2325,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		openFolder.setLauncher(this);
 
 		openFolder.bind(folderInfo);
-		folderInfo.opened = true;
 
+		folderInfo.opened = true;
 		mWorkspace.addInScreen(openFolder, folderInfo.screen, 0, 0, 4, 4);
 		openFolder.onOpen();
 	}
@@ -2352,6 +2372,17 @@ public final class Launcher extends Activity implements View.OnClickListener,
 						mWorkspace.startDrag(cellInfo);
 					}
 				}
+			}
+		} else {
+			if (!(v instanceof LayoutType)) {
+				// v = (View) v.getParent();
+
+				MobjectImageView mObjectImageView = (MobjectImageView) v;
+				MLayout mLayout = (MLayout) mObjectImageView.getParent();
+				mLayout.setVisibleStateSpeechBubble((MobjectImageView) mObjectImageView);
+			} else {
+				MLayout mLayout = (MLayout) v;
+				mLayout.setMobjectResolution(240, 400);
 			}
 		}
 
@@ -3240,6 +3271,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		ListView listview;
 		ArrayAdapter<String> adapter;
 		String[] str = { "앱매칭", "아이콘대칭" };
+		Bitmap bitmap;
 
 		public Function_dialog(final Context context, final View v) {
 			super(context);
@@ -3265,21 +3297,23 @@ public final class Launcher extends Activity implements View.OnClickListener,
 						dialog.show();
 					} else if (position == 1) {
 						Object tag = v.getTag();
-						if(((Mobject)tag).mobjectIcon % 2 !=0)
-						{							
-							((Mobject)tag).mobjectIcon -=1;
-						}
-						else{
-							((Mobject)tag).mobjectIcon +=1;
+
+						if (((Mobject) tag).icon_mirror == 0) {
+							MobjectImageView imgView = (MobjectImageView) v;
+							imgView.reverseImg();
+							((Mobject) tag).icon_mirror = 1;
+						} else {
+							MobjectImageView imgView = (MobjectImageView) v;
+							imgView.orginImg();
+							((Mobject) tag).icon_mirror = 0;
 						}
 						v.setTag(tag);
-						((TextView)v).setCompoundDrawablesWithIntrinsicBounds(0,MImageList.getInstance().getIcon(
-								((Mobject)tag).mobjectType, ((Mobject)tag).mobjectIcon), 0, 0);											
 						final ContentValues values = new ContentValues();
 						final ContentResolver cr = context.getContentResolver();
-						values.put(LauncherSettings.Favorites.MOBJECT_ICON,((Mobject)tag).mobjectIcon);
-						cr.update(LauncherSettings.Favorites.getContentUri(((Mobject)tag).id, false),
-						values, null, null);
+						values.put(LauncherSettings.Favorites.ICON_MIRROR,
+								((Mobject) tag).icon_mirror);
+						cr.update(LauncherSettings.Favorites.getContentUri(
+								((Mobject) tag).id, false), values, null, null);
 					}
 					dismiss();
 				}
@@ -3482,8 +3516,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			switch (msg.what) {
 			case SEND_THREAD_PLAY:
 				for (int i = 0; i < vg.getChildCount(); i++) {
-					if (vg.getChildAt(i) instanceof MobjectTextView)
-						((MobjectTextView) vg.getChildAt(i)).startAnimation();
+					if (vg.getChildAt(i) instanceof MobjectImageView)
+						((MobjectImageView) vg.getChildAt(i)).startAnimation();
 				}
 				break;
 
@@ -3529,7 +3563,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			if (mModifyThread.isAlive())
 				mModifyThread.interrupt();
 		}
-		
+
 		mModifyThread = new ModifyThread();
 		mModifyThread.start();
 	}
@@ -3540,6 +3574,107 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	public void viewSetTag(Mobject tag) {
 		SelectView.setTag(tag);
-	}	
+	}
 
+	// 로그캣
+	public void writeLogcat() {
+
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = null;
+		Process p = null;
+
+		try {
+			p = Runtime.getRuntime().exec("logcat -d -v time *:V");
+			br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line;
+			String lineSeparator = System.getProperty("line.separator");
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+				sb.append(lineSeparator);
+			}
+
+			File file = new File(Environment.getExternalStorageDirectory()
+					+ File.separator + "MateLauncher" + File.separator
+					+ "MateLog.log");
+
+			// if(android.os.Build.VERSION.SDK_INT >= 16) {
+			// file.setReadable(true);
+			// file.setWritable(true);
+			// file.setExecutable(true);
+			// }
+
+			if (file.exists()) {
+				file.delete();
+			}
+
+			byte[] data = sb.toString().getBytes();
+			ParcelFileDescriptor parcel = ParcelFileDescriptor.open(file,
+					ParcelFileDescriptor.MODE_WORLD_READABLE
+							| ParcelFileDescriptor.MODE_WORLD_WRITEABLE
+							| ParcelFileDescriptor.MODE_READ_WRITE
+							| ParcelFileDescriptor.MODE_CREATE
+							| ParcelFileDescriptor.MODE_APPEND);
+
+			FileOutputStream fos = new FileOutputStream(
+					parcel.getFileDescriptor());
+			fos.write(data, 0, data.length);
+			fos.flush();
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (p != null) {
+			p.destroy();
+		}
+	}
+
+	// 로그
+	public static void configureLogger() {
+		final LogConfigurator logConfigurator = new LogConfigurator();
+		logConfigurator.setFileName(Environment.getExternalStorageDirectory()
+				+ File.separator + "MateLauncher" + File.separator
+				+ "MateLog.log");
+		logConfigurator.setRootLevel(Level.DEBUG);
+		logConfigurator.setLevel("org.apache", Level.ERROR);
+		logConfigurator.configure();
+	}
+
+	// start widget service
+	public void widgetStart() {
+		Intent intent = new Intent(this, WeatherWidgetService.class);
+		startService(intent);
+		bindService(intent, connect, Context.BIND_AUTO_CREATE);
+	}
+
+	// stop widget service
+	public void widgetStop() {
+		Intent intent = new Intent(this, WeatherWidgetService.class);
+		stopService(intent);
+		unbindService(connect);
+	}
+
+	public void widgetIconChange(long id) {
+		final ContentValues values = new ContentValues();
+		final ContentResolver cr = this.getContentResolver();
+		values.put(LauncherSettings.Favorites.MOBJECT_ICON, 0);
+		cr.update(LauncherSettings.Favorites.getContentUri(id, false), values,
+				null, null);
+		onStart();//화면 갱신
+	}
+	
+	public ServiceConnection connect = new ServiceConnection() {
+		
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 }

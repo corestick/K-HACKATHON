@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mobi.intuitit.android.mate.launcher.MobjectTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<mobi.intuitit.android.mate.launcher.MobjectImageView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/WorkspaceIcon.Portrait" >
 
-</mobi.intuitit.android.mate.launcher.MobjectTextView>
+</mobi.intuitit.android.mate.launcher.MobjectImageView>

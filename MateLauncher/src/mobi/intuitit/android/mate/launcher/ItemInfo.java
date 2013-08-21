@@ -109,6 +109,7 @@ class ItemInfo {
     
     String contact_num;
     String contact_name;
+    int icon_mirror = 0; // 1이면 반대이미지
 
     ItemInfo() {
     }
@@ -124,6 +125,7 @@ class ItemInfo {
         container = info.container;
         mobjectType = info.mobjectType;
         mobjectIcon = info.mobjectIcon;
+        icon_mirror = info.icon_mirror;
     }
 
     /**
@@ -149,6 +151,7 @@ class ItemInfo {
     		
     		values.put(LauncherSettings.BaseLauncherColumns.CONTACT_NUM, contact_num);
     		values.put(LauncherSettings.BaseLauncherColumns.CONTACT_NAME, contact_name);
+    		values.put(LauncherSettings.BaseLauncherColumns.ICON_MIRROR, icon_mirror);
         }
     }
 

@@ -19,6 +19,7 @@ package mobi.intuitit.android.mate.launcher;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ public class ApplicationsAdapter extends ArrayAdapter<ItemInfo> {
 		}
 
 		if (!info.filtered) {
+			Log.e("icon", info.icon.toString());
 			info.icon = Utilities.createIconThumbnail(info.icon, getContext());
 			info.filtered = true;
 		}

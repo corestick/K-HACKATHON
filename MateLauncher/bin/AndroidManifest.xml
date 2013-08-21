@@ -32,6 +32,7 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
+     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
@@ -43,9 +44,11 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="mobi.intuitit.android.mate.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="mobi.intuitit.android.mate.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	
 
     <application
         android:name="LauncherApplication"
@@ -61,6 +64,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="nosensor"
             android:stateNotNeeded="true"
+            android:persistent="true"
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar"
             android:windowSoftInputMode="stateUnspecified|adjustPan" >
             <intent-filter>
@@ -135,8 +139,10 @@
             android:name="ScreenPrefActivity"
             android:screenOrientation="sensor" >
         </activity>
+         <service android:name="mobi.intutit.android.weatherwidget.WeatherWidgetService"
+            android:enabled="true"/>
     </application>
 
-    <uses-sdk android:minSdkVersion="7" />
+    <uses-sdk android:minSdkVersion="9" />
 
 </manifest>

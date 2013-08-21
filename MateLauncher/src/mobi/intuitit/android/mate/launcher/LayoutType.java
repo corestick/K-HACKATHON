@@ -120,6 +120,15 @@ abstract public class LayoutType extends WidgetCellLayout {
 			this.cellHSpan = cellHSpan;
 			this.cellVSpan = cellVSpan;
 		}
+		
+		public LayoutParams(int cellX, int cellY)
+		{
+			super(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+			this.cellX = cellX;
+			this.cellY = cellY;
+			this.width = LayoutParams.FILL_PARENT;
+			this.height = LayoutParams.FILL_PARENT;
+		}
 
 		public void setup(int cellWidth, int cellHeight, int widthGap,
 				int heightGap, int hStartPadding, int vStartPadding) {

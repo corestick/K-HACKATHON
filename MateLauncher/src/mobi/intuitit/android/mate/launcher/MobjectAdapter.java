@@ -35,7 +35,7 @@ public class MobjectAdapter extends ArrayAdapter<Mobject> {
 
         final TextView textView = (TextView) convertView;
         textView.setCompoundDrawablesWithIntrinsicBounds(null, info.icon, null, null);
-        textView.setText(info.title);
+//        textView.setText(info.title);
 
         return convertView;
     }
