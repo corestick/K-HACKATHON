@@ -32,7 +32,7 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
-     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
@@ -48,7 +48,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-	
 
     <application
         android:name="LauncherApplication"
@@ -62,9 +61,9 @@
             android:name="Launcher"
             android:clearTaskOnLaunch="true"
             android:launchMode="singleTask"
+            android:persistent="true"
             android:screenOrientation="nosensor"
             android:stateNotNeeded="true"
-            android:persistent="true"
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar"
             android:windowSoftInputMode="stateUnspecified|adjustPan" >
             <intent-filter>
@@ -121,14 +120,14 @@
         
         <receiver
             android:name="mobi.intuitit.android.mate.launcher.SMSReceiver"
-           android:enabled="true"
-           android:exported="true" >            
+            android:enabled="true"
+            android:exported="true" >
             <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
-        </receiver>   
-            
-            <!-- The settings provider contains Home's data, like the workspace favorites -->
+        </receiver>
+
+        <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
             android:name="LauncherProvider"
             android:authorities="mobi.intuitit.android.mate.launcher.settings"
@@ -139,8 +138,10 @@
             android:name="ScreenPrefActivity"
             android:screenOrientation="sensor" >
         </activity>
-         <service android:name="mobi.intutit.android.weatherwidget.WeatherWidgetService"
-            android:enabled="true"/>
+
+        <service
+            android:name="mobi.intuitit.android.weatherwidget.WeatherWidgetService"
+            android:enabled="true" />
     </application>
 
     <uses-sdk android:minSdkVersion="9" />

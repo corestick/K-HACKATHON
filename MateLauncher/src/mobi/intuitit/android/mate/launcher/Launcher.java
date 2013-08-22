@@ -40,7 +40,7 @@ import java.util.List;
 import mobi.intuitit.android.content.LauncherIntent;
 import mobi.intuitit.android.content.LauncherMetadata;
 import mobi.intuitit.android.mate.launcher.ScreenLayout.onScreenChangeListener;
-import mobi.intutit.android.weatherwidget.WeatherWidgetService;
+import mobi.intuitit.android.weatherwidget.WeatherWidgetService;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -289,6 +289,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		// Log4j 설정 //
 		configureLogger();
+		
+		//위젯 서비스 시작
+		widgetStart();
 
 		checkForLocaleChange();
 		setWallpaperDimension();
@@ -1271,6 +1274,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		unregisterReceiver(mCloseSystemDialogsReceiver);
 
 		mWorkspace.unregisterProvider();
+		
+		widgetStop();
 	}
 
 	@Override
@@ -2215,7 +2220,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					createThreadAndDialog();
 					break;
 				case MGlobal.MOBJECTTYPE_WIDGET:
-
 					break;
 				}
 			}
@@ -2413,7 +2417,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	// return mDrawer.isMoving();
 	// }
 
-	static Workspace getWorkspace() {
+	public static Workspace getWorkspace() {
 		return mWorkspace;
 	}
 
@@ -3642,16 +3646,17 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	// start widget service
 	public void widgetStart() {
+		Log.e("RRR", "widgetStart");
 		Intent intent = new Intent(this, WeatherWidgetService.class);
 		startService(intent);
-		bindService(intent, connect, Context.BIND_AUTO_CREATE);
+//		bindService(intent, connect, Context.BIND_AUTO_CREATE);
 	}
 
 	// stop widget service
 	public void widgetStop() {
 		Intent intent = new Intent(this, WeatherWidgetService.class);
 		stopService(intent);
-		unbindService(connect);
+//		unbindService(connect);
 	}
 
 	public void widgetIconChange(long id) {

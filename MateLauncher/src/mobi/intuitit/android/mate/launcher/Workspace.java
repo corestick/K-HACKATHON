@@ -19,9 +19,9 @@ package mobi.intuitit.android.mate.launcher;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import mobi.intuitit.android.weatherwidget.WeatherWidgetService;
 import mobi.intuitit.android.widget.WidgetCellLayout;
 import mobi.intuitit.android.widget.WidgetSpace;
-import mobi.intutit.android.weatherwidget.WeatherWidgetService;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
@@ -1132,10 +1132,10 @@ public class Workspace extends WidgetSpace implements DropTarget, DragSource,
 				LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen,
 				lp.cellX, lp.cellY);
 		
-		if(info.mobjectType == MGlobal.MOBJECTTYPE_WIDGET){
-			Log.e("widget", "widget");
-			mLauncher.widgetStart(); // ³¯¾¾À§Á¬ ¼­ºñ½º ½ÃÀÛ
-		}
+//		if(info.mobjectType == MGlobal.MOBJECTTYPE_WIDGET){
+//			Log.e("widget", "widget");
+//			mLauncher.widgetStart(); // ³¯¾¾À§Á¬ ¼­ºñ½º ½ÃÀÛ
+//		}
 	}
 
 	/**

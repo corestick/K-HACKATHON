@@ -41,7 +41,7 @@ public class MobjectImageView extends ImageView {
 		// mBackground.setCallback(this);
 
 		ItemInfo info = (ItemInfo) getTag();
-		Log.e("M-mirror", info.icon_mirror + "");
+//		Log.e("M-mirror", info.icon_mirror + "");
 		if (info.icon_mirror == 1) {
 			this.setBackgroundDrawable(flipDrawable(getResources()
 					.getDrawable(

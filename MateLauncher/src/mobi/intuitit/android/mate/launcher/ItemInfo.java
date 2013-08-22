@@ -29,7 +29,7 @@ import android.util.Log;
 /**
  * Represents an item in the launcher.
  */
-class ItemInfo {
+public class ItemInfo {
     
     static final int NO_ID = -1;
     
@@ -44,7 +44,7 @@ class ItemInfo {
      * {@link LauncherSettings.Favorites#ITEM_TYPE_USER_FOLDER}, or
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
      */
-    int itemType;
+    public int itemType;
     
     /**
      * The id of the container that holds this item. For the desktop, this will be 
