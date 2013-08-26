@@ -1,4 +1,5 @@
 package mobi.intuitit.android.mate.launcher;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
@@ -7,19 +8,17 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 public class MDockbar extends LinearLayout implements View.OnClickListener {
-	
+
 	private ImageButton mFurniture;
 	private ImageButton mWallpaper;
-	private ImageButton mFlooring;
 	private ImageButton mAvatar;
 	private ImageButton mWidget;
 	private ImageButton mRight;
 
 	Launcher mLauncher;
 	Context context;
-	
-	Bitmap captureView[]; 
-	
+
+	Bitmap captureView[];
 
 	public MDockbar(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -32,19 +31,17 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 	public void initMDockbar(Launcher launcher) {
 		this.mLauncher = launcher;
 
-		mFurniture = new ImageButton(context);
-		mFlooring = new ImageButton(context);
+		mFurniture = new ImageButton(context);		
 		mWallpaper = new ImageButton(context);
 		mAvatar = new ImageButton(context);
 		mWidget = new ImageButton(context);
 		mRight = new ImageButton(context);
 
-		mFurniture.setBackgroundResource(R.drawable.icon_furniture);
-		mFlooring.setBackgroundResource(R.drawable.icon_flooring);
-		mWallpaper.setBackgroundResource(R.drawable.icon_wallpaper);
+		mFurniture.setBackgroundResource(R.drawable.icon_furniture);		
+		mWallpaper.setBackgroundResource(R.drawable.icon_flooring);
 		mAvatar.setBackgroundResource(R.drawable.icon_avatar);
-		mWidget.setBackgroundResource(R.drawable.icon_widget);
-		mRight.setBackgroundResource(R.drawable.icon_right);
+		mWidget.setBackgroundResource(R.drawable.icon_wiget);
+		mRight.setBackgroundResource(R.drawable.icon_home);
 
 		addView(mFurniture);
 		LayoutParams params = (LayoutParams) mFurniture.getLayoutParams();
@@ -54,12 +51,7 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 		addView(mWallpaper);
 		params = (LayoutParams) mFurniture.getLayoutParams();
 		params.weight = 50;
-		mWallpaper.setLayoutParams(params);
-
-		addView(mFlooring);
-		params = (LayoutParams) mFlooring.getLayoutParams();
-		params.weight = 50;
-		mFlooring.setLayoutParams(params);
+		mWallpaper.setLayoutParams(params);	
 
 		addView(mAvatar);
 		params = (LayoutParams) mAvatar.getLayoutParams();
@@ -73,16 +65,15 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 
 		addView(mRight);
 		params = (LayoutParams) mRight.getLayoutParams();
-		params.weight = 10;
+		params.weight = 50;
 		mRight.setLayoutParams(params);
 
 		mFurniture.setOnClickListener(this);
-		mWallpaper.setOnClickListener(this);
-		mFlooring.setOnClickListener(this);
+		mWallpaper.setOnClickListener(this);		
 		mAvatar.setOnClickListener(this);
 		mWidget.setOnClickListener(this);
 		mRight.setOnClickListener(this);
-	}	
+	}
 
 	public void showMDockbar() {
 		this.setVisibility(VISIBLE);
@@ -91,6 +82,7 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 	public void hideMDockbar() {
 		this.setVisibility(INVISIBLE);
 	}
+
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stubs
@@ -99,26 +91,19 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_FURNITURE) {
 				mLauncher.mObjectView.hideMobjectView();
 			} else {
-				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_FURNITURE);
+				mLauncher.mObjectView
+						.showMojbectView(MGlobal.MDOCKBAR_MENU_FURNITURE);
 			}
 			return;
 		}
 
 		if (v.equals(mWallpaper)) {
 
-			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_WALLPAPER) {
+			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_BACKGROUND) {
 				mLauncher.mObjectView.hideMobjectView();
 			} else {
-				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_WALLPAPER);
-			}
-			return;
-		}
-
-		if (v.equals(mFlooring)) {
-			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_FLOORING) {
-				mLauncher.mObjectView.hideMobjectView();
-			} else {
-				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_FLOORING);
+				mLauncher.mObjectView
+						.showMojbectView(MGlobal.MDOCKBAR_MENU_BACKGROUND);
 			}
 			return;
 		}
@@ -127,20 +112,22 @@ public class MDockbar extends LinearLayout implements View.OnClickListener {
 			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_AVATAR) {
 				mLauncher.mObjectView.hideMobjectView();
 			} else {
-				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_AVATAR);
+				mLauncher.mObjectView
+						.showMojbectView(MGlobal.MDOCKBAR_MENU_AVATAR);
 			}
 			return;
 		}
-				
+
 		if (v.equals(mWidget)) {
-			if(mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_WIDGET) {
+			if (mLauncher.mObjectView.mObjectViewType == MGlobal.MDOCKBAR_MENU_WIDGET) {
 				mLauncher.mObjectView.hideMobjectView();
 			} else {
-				mLauncher.mObjectView.showMojbectView(MGlobal.MDOCKBAR_MENU_WIDGET);
+				mLauncher.mObjectView
+						.showMojbectView(MGlobal.MDOCKBAR_MENU_WIDGET);
 			}
-			return; 
+			return;
 		}
-			
+
 		if (v.equals(mRight)) {
 			mLauncher.mObjectView.hideMobjectView();
 			hideMDockbar();

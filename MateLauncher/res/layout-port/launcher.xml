@@ -59,8 +59,7 @@
         android:drawSelectorOnTop="false"
         android:listSelector="@drawable/grid_selector"
         android:numColumns="4"
-        android:scrollbarStyle="outsideInset"
-        android:verticalSpacing="10dip"
+        android:scrollbarStyle="outsideInset"        
         android:visibility="gone"
         launcher:texture="@drawable/pattern_carbon_fiber_dark" />
 
@@ -79,10 +78,9 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginBottom="65dip"
-        android:numColumns="4"
-        android:verticalSpacing="10dip"
+        android:numColumns="4"        
         android:visibility="invisible"
-        launcher:texture="@drawable/pattern_carbon_fiber_dark" />
+        launcher:texture="@drawable/gridback" />
     <mobi.intuitit.android.mate.launcher.ScreenIndicator
         android:id="@+id/screen_indicator"
         android:layout_width="fill_parent"

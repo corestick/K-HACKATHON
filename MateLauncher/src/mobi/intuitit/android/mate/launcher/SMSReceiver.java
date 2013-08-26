@@ -15,7 +15,7 @@ public class SMSReceiver extends BroadcastReceiver {
 		SmsMessage[] msgs = null;
 		String msg = "";
 		String receiver = "";
-		
+
 		if (bundle != null) {
 			Object[] pdus = (Object[]) bundle.get("pdus");
 			msgs = new SmsMessage[pdus.length];

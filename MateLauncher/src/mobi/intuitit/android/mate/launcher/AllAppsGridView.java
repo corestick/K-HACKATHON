@@ -87,7 +87,7 @@ public class AllAppsGridView extends GridView implements
 
 		int x = 0;
 		int y;
-
+		
 		while (x < width) {
 			y = 0;
 			while (y < height) {

@@ -64,7 +64,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
@@ -83,7 +82,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
@@ -258,6 +256,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private ModifyThread mModifyThread = null;
 
 	private final Logger log4j = Logger.getLogger(Launcher.class);
+	
+	static public int mWeather = MGlobal.WEATHER_SUNNY;
 
 	@Override
 	protected void onStart() {
@@ -286,12 +286,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		if (PROFILE_STARTUP) {
 			android.os.Debug.startMethodTracing("/sdcard/launcher");
 		}
-
-		// Log4j 설정 //
-		configureLogger();
-		
-		//위젯 서비스 시작
-		widgetStart();
+	
 
 		checkForLocaleChange();
 		setWallpaperDimension();
@@ -303,15 +298,22 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		registerContentObservers();
 
 		mSavedState = savedInstanceState;
-		restoreState(mSavedState);
+		restoreState(mSavedState);	
+	
 
 		if (PROFILE_STARTUP) {
 			android.os.Debug.stopMethodTracing();
 		}
 
 		if (!mRestoring) {
-			startLoaders();
+			startLoaders();			
 		}
+		
+		// Log4j 설정 //
+//		configureLogger();
+
+		// 위젯 서비스 시작
+		widgetStart();
 
 		// For handling default keys
 		mDefaultKeySsb = new SpannableStringBuilder();
@@ -1274,7 +1276,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		unregisterReceiver(mCloseSystemDialogsReceiver);
 
 		mWorkspace.unregisterProvider();
-		
+
 		widgetStop();
 	}
 
@@ -2220,6 +2222,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					createThreadAndDialog();
 					break;
 				case MGlobal.MOBJECTTYPE_WIDGET:
+					((MobjectImageView) v).setWidgetImg();
 					break;
 				}
 			}
@@ -3311,6 +3314,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 							imgView.orginImg();
 							((Mobject) tag).icon_mirror = 0;
 						}
+						
 						v.setTag(tag);
 						final ContentValues values = new ContentValues();
 						final ContentResolver cr = context.getContentResolver();
@@ -3646,40 +3650,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	// start widget service
 	public void widgetStart() {
-		Log.e("RRR", "widgetStart");
 		Intent intent = new Intent(this, WeatherWidgetService.class);
 		startService(intent);
-//		bindService(intent, connect, Context.BIND_AUTO_CREATE);
 	}
 
 	// stop widget service
 	public void widgetStop() {
 		Intent intent = new Intent(this, WeatherWidgetService.class);
 		stopService(intent);
-//		unbindService(connect);
 	}
-
-	public void widgetIconChange(long id) {
-		final ContentValues values = new ContentValues();
-		final ContentResolver cr = this.getContentResolver();
-		values.put(LauncherSettings.Favorites.MOBJECT_ICON, 0);
-		cr.update(LauncherSettings.Favorites.getContentUri(id, false), values,
-				null, null);
-		onStart();//화면 갱신
-	}
-	
-	public ServiceConnection connect = new ServiceConnection() {
-		
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			// TODO Auto-generated method stub
-			
-		}
-	};
 }

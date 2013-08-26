@@ -43,9 +43,9 @@ public class MBackground {
 	public void setBitmap(BitmapDrawable bd) {
 		mBitmap = bd.getBitmap();
 		mPaint = new Paint();
-		mPaint.setAntiAlias(true);
+		mPaint.setAntiAlias(true);		
 		mPaint.setShader(new BitmapShader(mBitmap, TileMode.REPEAT,
-				TileMode.REPEAT));
+				TileMode.MIRROR));
 	}
 	
 	public Path getLeftPath() {

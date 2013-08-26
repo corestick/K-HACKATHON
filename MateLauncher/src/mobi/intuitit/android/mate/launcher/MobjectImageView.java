@@ -41,45 +41,93 @@ public class MobjectImageView extends ImageView {
 		// mBackground.setCallback(this);
 
 		ItemInfo info = (ItemInfo) getTag();
-//		Log.e("M-mirror", info.icon_mirror + "");
-		if (info.icon_mirror == 1) {
-			this.setBackgroundDrawable(flipDrawable(getResources()
-					.getDrawable(
-							MImageList.getInstance().getIcon(info.mobjectType,
-									info.mobjectIcon))));
-		} else {
-			this.setBackgroundResource(MImageList.getInstance().getIcon(
-					info.mobjectType, info.mobjectIcon));
+		
+		if(info.itemType == MGlobal.MOBJECTTYPE_WIDGET)
+			setWidgetImg();
+		{
+			if (info.icon_mirror == 1) {
+				reverseImg();
+			} else {
+				orginImg();
+			}
 		}
 		// this.setCompoundDrawablesWithIntrinsicBounds(0,
 		// MImageList.getInstance().getIcon(
 		// info.mobjectType, info.mobjectIcon), 0, 0);
 
 	}
-	
-	public void orginImg(){
+
+	public void orginImg() {
 		ItemInfo info = (ItemInfo) getTag();
 		this.setBackgroundResource(MImageList.getInstance().getIcon(
 				info.mobjectType, info.mobjectIcon));
 	}
-	
-	Drawable flipDrawable(Drawable d)
-	{
-	    Matrix m = new Matrix();
-	    m.preScale(-1, 1);
-	    Bitmap src = ((BitmapDrawable) d).getBitmap();
-	    Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), m, false);
-	    dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
-	    return new BitmapDrawable(dst);
+
+	public void orginImg(int id) {
+		this.setBackgroundResource(id);
+	}
+
+	Drawable flipDrawable(Drawable d) {
+		Matrix m = new Matrix();
+		m.preScale(-1, 1);
+		Bitmap src = ((BitmapDrawable) d).getBitmap();
+		Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(),
+				src.getHeight(), m, false);
+		dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
+		return new BitmapDrawable(dst);
 	}
 
 	public void reverseImg() {
 
 		ItemInfo info = (ItemInfo) getTag();
-		Drawable d = getResources().getDrawable(MImageList.getInstance().getIcon(
-				info.mobjectType, info.mobjectIcon));		
-		
+		Drawable d = getResources().getDrawable(
+				MImageList.getInstance().getIcon(info.mobjectType,
+						info.mobjectIcon));
+
 		this.setBackgroundDrawable(flipDrawable(d));
+	}
+
+	public void reverseImg(int id) {
+		Drawable d = getResources().getDrawable(id);
+		this.setBackgroundDrawable(flipDrawable(d));
+	}
+
+	public void setWidgetImg() {
+		ItemInfo info = (ItemInfo) getTag();
+	
+		switch (Launcher.mWeather) {
+		case MGlobal.WEATHER_CLOUD:
+			if (info.mobjectIcon % 2 == 1)
+				info.mobjectIcon = 2;
+			else
+				info.mobjectIcon = 3;
+			break;
+		case MGlobal.WEATHER_RAIN:
+			if (info.mobjectIcon % 2 == 1)
+				info.mobjectIcon = 4;
+			else
+				info.mobjectIcon = 5;
+			break;
+		case MGlobal.WEATHER_SNOW:
+			if (info.mobjectIcon % 2 == 1)
+				info.mobjectIcon = 6;
+			else
+				info.mobjectIcon =  7;
+			break;
+		case MGlobal.WEATHER_SUNNY:
+		default:
+			if (info.mobjectIcon % 2 == 1)
+				info.mobjectIcon = 0;
+			else
+				info.mobjectIcon = 1;
+			break;
+		}
+		
+		if (info.icon_mirror == 1) {
+			reverseImg();
+		} else {
+			orginImg();
+		}
 	}
 
 	// public void setTitle(boolean isModifyMode) {
