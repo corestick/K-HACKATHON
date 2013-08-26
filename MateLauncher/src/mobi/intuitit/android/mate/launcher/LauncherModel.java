@@ -886,8 +886,8 @@ public class LauncherModel {
 						.getColumnIndex(LauncherSettings.Favorites.CONTACT_NUM);
 				final int contact_name = c
 						.getColumnIndex(LauncherSettings.Favorites.CONTACT_NAME);
-				final int icon_mirror = c
-						.getColumnIndex(LauncherSettings.Favorites.ICON_MIRROR);
+				final int reverseIcon = c
+						.getColumnIndex(LauncherSettings.Favorites.REVERSE_ICON);
 
 				Mobject appinfo;
 				ApplicationInfo info;
@@ -937,7 +937,7 @@ public class LauncherModel {
 								appinfo.cellX = c.getInt(cellXIndex);
 								appinfo.cellY = c.getInt(cellYIndex);
 								appinfo.mobjectType = c.getInt(mobjectType);
-								appinfo.icon_mirror = c.getInt(icon_mirror);								
+								appinfo.reverseIcon = c.getInt(reverseIcon);								
 								
 								switch (container) {
 								case LauncherSettings.Favorites.CONTAINER_DESKTOP:
@@ -988,7 +988,7 @@ public class LauncherModel {
 
 									info.mobjectType = c.getInt(mobjectType);
 									info.mobjectIcon = c.getInt(mobjectIcon);
-									info.icon_mirror = c.getInt(icon_mirror);
+									info.reverseIcon = c.getInt(reverseIcon);
 									
 									switch (container) {
 									case LauncherSettings.Favorites.CONTAINER_DESKTOP:

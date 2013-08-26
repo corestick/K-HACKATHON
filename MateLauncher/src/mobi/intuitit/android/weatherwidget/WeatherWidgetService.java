@@ -55,7 +55,7 @@ public class WeatherWidgetService extends Service {
 				msg.what = 0;
 				mHandler.sendMessage(msg);
 				try {
-					Thread.sleep(100000);
+					Thread.sleep(1800000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -68,8 +68,9 @@ public class WeatherWidgetService extends Service {
 		public void handleMessage(Message msg) {
 			if (msg.what == 0) {
 				lh.run();
-//				Log.e("RRR", "Lat=" + lh.getLat());
-//				Log.e("RRR", "Lng=" + lh.getLng());
+
+				// Log.e("RRR", "Lat=" + lh.getLat());
+				// Log.e("RRR", "Lng=" + lh.getLng());
 
 				Location location = new Location(
 						LocationManager.NETWORK_PROVIDER);
@@ -77,10 +78,6 @@ public class WeatherWidgetService extends Service {
 				location.setLongitude(lh.getLng());
 				mWeatherDataManager.setLocation(location);
 				weatherStr = mWeatherDataManager.getCurrentWeather();
-				
-				Log.e("CW", weatherStr);
-				Log.e("RRR", "1-->" + Launcher.mWeather);
-				weatherStr = "ºñ";
 
 				if (Launcher.getWorkspace() != null) {
 					if (weatherStr.equals("¸¼À½")) {
@@ -97,8 +94,6 @@ public class WeatherWidgetService extends Service {
 					} else if (weatherStr.equals("´«")) {
 						Launcher.mWeather = MGlobal.WEATHER_SNOW;
 					}
-					
-					Log.e("RRR", "2-->" + Launcher.mWeather);
 
 					Workspace mWorkspace = Launcher.getWorkspace();
 					mWorkspace.setWidgetImg();

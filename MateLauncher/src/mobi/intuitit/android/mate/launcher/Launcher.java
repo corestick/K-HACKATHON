@@ -2222,7 +2222,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					createThreadAndDialog();
 					break;
 				case MGlobal.MOBJECTTYPE_WIDGET:
-					((MobjectImageView) v).setWidgetImg();
+					((MobjectImageView) v).reverseImg();
 					break;
 				}
 			}
@@ -3303,25 +3303,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 						dialog.getWindow().setAttributes(params);
 						dialog.show();
 					} else if (position == 1) {
-						Object tag = v.getTag();
-
-						if (((Mobject) tag).icon_mirror == 0) {
-							MobjectImageView imgView = (MobjectImageView) v;
-							imgView.reverseImg();
-							((Mobject) tag).icon_mirror = 1;
-						} else {
-							MobjectImageView imgView = (MobjectImageView) v;
-							imgView.orginImg();
-							((Mobject) tag).icon_mirror = 0;
-						}
-						
-						v.setTag(tag);
-						final ContentValues values = new ContentValues();
-						final ContentResolver cr = context.getContentResolver();
-						values.put(LauncherSettings.Favorites.ICON_MIRROR,
-								((Mobject) tag).icon_mirror);
-						cr.update(LauncherSettings.Favorites.getContentUri(
-								((Mobject) tag).id, false), values, null, null);
+						Object tag = v.getTag();						
+						((MobjectImageView) v).reverseImg();
 					}
 					dismiss();
 				}

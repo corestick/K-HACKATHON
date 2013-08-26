@@ -31,7 +31,7 @@ public class MLayout extends LayoutType {
 	private int mFlooringResIdx;
 	private int mWallpaperResIdx;
 
-	private Launcher mLauncher;
+	public Launcher mLauncher;
 	private int mScreenIdx;
 
 	private final int SPEECHBUBBLE_WIDTH = 160;

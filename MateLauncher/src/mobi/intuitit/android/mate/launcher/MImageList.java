@@ -1,8 +1,7 @@
 package mobi.intuitit.android.mate.launcher;
 
+import java.util.HashMap;
 import java.util.Vector;
-
-import android.R.integer;
 
 public class MImageList {
 
@@ -10,7 +9,9 @@ public class MImageList {
 	public Vector<Integer> avatarList;
 	public Vector<Integer> furnitureList;
 	public Vector<Integer> widgetList;
-
+	
+	public HashMap<Integer, HashMap<Integer, Integer>> weatherList;
+	
 	private static MImageList mImageList = new MImageList();
 
 	private MImageList() {
@@ -19,11 +20,13 @@ public class MImageList {
 		avatarList = new Vector<Integer>();
 		furnitureList = new Vector<Integer>();
 		widgetList = new Vector<Integer>();
+		weatherList = new HashMap<Integer, HashMap<Integer, Integer>>();
 
 		initBackground();
 		initAvatar();
 		initFurniture();
 		initWidget();
+		initWeather();
 	}
 
 	public static MImageList getInstance() {
@@ -96,23 +99,40 @@ public class MImageList {
 	private void initWidget() {
 		widgetList.add(R.drawable.sunny);
 		widgetList.add(R.drawable.big_sunny);
-		widgetList.add(R.drawable.cloud);
-		widgetList.add(R.drawable.big_cloud);
-		widgetList.add(R.drawable.rain);
-		widgetList.add(R.drawable.big_rain);
-		widgetList.add(R.drawable.snow);
-		widgetList.add(R.drawable.big_snow);
+//		widgetList.add(R.drawable.cloud);
+//		widgetList.add(R.drawable.big_cloud);
+//		widgetList.add(R.drawable.rain);
+//		widgetList.add(R.drawable.big_rain);
+//		widgetList.add(R.drawable.snow);
+//		widgetList.add(R.drawable.big_snow);
+	}
+	
+	private void initWeather() {
+		HashMap<Integer, Integer> weather1 = new HashMap<Integer, Integer>();
+		weather1.put(MGlobal.WEATHER_SUNNY, R.drawable.sunny);
+		weather1.put(MGlobal.WEATHER_CLOUD, R.drawable.cloud);
+		weather1.put(MGlobal.WEATHER_RAIN, R.drawable.rain);
+		weather1.put(MGlobal.WEATHER_SNOW, R.drawable.snow);
+		
+		HashMap<Integer, Integer> weather2 = new HashMap<Integer, Integer>();
+		weather2.put(MGlobal.WEATHER_SUNNY, R.drawable.big_sunny);
+		weather2.put(MGlobal.WEATHER_CLOUD, R.drawable.big_cloud);
+		weather2.put(MGlobal.WEATHER_RAIN, R.drawable.big_rain);
+		weather2.put(MGlobal.WEATHER_SNOW, R.drawable.big_snow);
+		
+		weatherList.put(0, weather1);
+		weatherList.put(1, weather2);
 	}
 
 	public int getIcon(int resType, int resIdx) {
-
+		
 		switch (resType) {
 		case 0: // 가구
 			return furnitureList.get(resIdx);
 		case 1: // 아바타
 			return avatarList.get(resIdx);
 		case 2: // 위젯
-			return widgetList.get(resIdx);
+			return weatherList.get(resIdx).get(Launcher.mWeather);
 		default:
 			return -1;
 		}

@@ -106,7 +106,7 @@ class ItemInfo {
     
     public int mobjectType = -1; // 0 = 가구, 1 = 아바타
     public int mobjectIcon = -1;
-    public int icon_mirror = 0; // 1이면 반대이미지
+    public int reverseIcon = 0; // 1이면 반대이미지
     
     String contact_num;
     String contact_name;
@@ -126,7 +126,7 @@ class ItemInfo {
         container = info.container;
         mobjectType = info.mobjectType;
         mobjectIcon = info.mobjectIcon;
-        icon_mirror = info.icon_mirror;
+        reverseIcon = info.reverseIcon;
     }
 
     /**
@@ -152,7 +152,7 @@ class ItemInfo {
     		
     		values.put(LauncherSettings.BaseLauncherColumns.CONTACT_NUM, contact_num);
     		values.put(LauncherSettings.BaseLauncherColumns.CONTACT_NAME, contact_name);
-    		values.put(LauncherSettings.BaseLauncherColumns.ICON_MIRROR, icon_mirror);
+    		values.put(LauncherSettings.BaseLauncherColumns.REVERSE_ICON, reverseIcon);
         }
     }
 
