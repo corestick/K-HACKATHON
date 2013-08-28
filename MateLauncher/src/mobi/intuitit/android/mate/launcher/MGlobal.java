@@ -10,8 +10,12 @@ public final class MGlobal {
 	
 	public static final int MDOCKBAR_MENU_HIDE = 0;
 	public static final int MDOCKBAR_MENU_FURNITURE = 1;
-	public static final int MDOCKBAR_MENU_WALLPAPER = 2;
-	public static final int MDOCKBAR_MENU_FLOORING = 3;
+	public static final int MDOCKBAR_MENU_BACKGROUND = 2;	
 	public static final int MDOCKBAR_MENU_AVATAR = 4;
 	public static final int MDOCKBAR_MENU_WIDGET = 5;
+	
+	public static final int WEATHER_SUNNY = 0;
+	public static final int WEATHER_CLOUD = 1;
+	public static final int WEATHER_RAIN = 2;
+	public static final int WEATHER_SNOW = 3;
 }

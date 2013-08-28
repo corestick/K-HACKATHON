@@ -249,7 +249,7 @@ public class LauncherProvider extends ContentProvider {
 					+ "iconPackage TEXT," + "iconResource TEXT," + "icon BLOB,"
 					+ "uri TEXT," + "displayMode INTEGER, "
 					+ "mobjectType INTEGER, " + "mobjectIcon INTEGER,"
-					+ "contact_num TEXT,"+ "contact_name TEXT," + "icon_mirror INTEGER" + ");");
+					+ "contact_num TEXT,"+ "contact_name TEXT," + "reverseIcon INTEGER" + ");");
 
 			db.execSQL("CREATE TABLE gestures (" + "_id INTEGER PRIMARY KEY,"
 					+ "title TEXT," + "intent TEXT," + "itemType INTEGER,"
@@ -346,8 +346,8 @@ public class LauncherProvider extends ContentProvider {
 					.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTACT_NUM);
 			final int contact_name = c
 					.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTACT_NAME);
-			final int icon_mirror = c
-					.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_MIRROR);
+			final int reverseIcon = c
+					.getColumnIndexOrThrow(LauncherSettings.Favorites.REVERSE_ICON);
 			ContentValues[] rows = new ContentValues[c.getCount()];
 			int i = 0;
 			while (c.moveToNext()) {
@@ -388,8 +388,8 @@ public class LauncherProvider extends ContentProvider {
 						c.getInt(contact_num));
 				values.put(LauncherSettings.Favorites.CONTACT_NAME,
 						c.getInt(contact_name));
-				values.put(LauncherSettings.Favorites.ICON_MIRROR,
-						c.getInt(icon_mirror));
+				values.put(LauncherSettings.Favorites.REVERSE_ICON,
+						c.getInt(reverseIcon));
 				rows[i++] = values;
 			}
 

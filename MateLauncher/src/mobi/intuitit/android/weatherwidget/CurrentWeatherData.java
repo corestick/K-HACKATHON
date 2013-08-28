@@ -91,7 +91,7 @@ public class CurrentWeatherData {
 			default: return "";
 		}
 	}
-	
+	//¿¡·¯
 	protected int getIcon() {
 		int icon = 0;
 		

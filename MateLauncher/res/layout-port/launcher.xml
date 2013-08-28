@@ -82,7 +82,7 @@
         android:numColumns="4"
         android:verticalSpacing="10dip"
         android:visibility="invisible"
-        launcher:texture="@drawable/pattern_carbon_fiber_dark" />
+        launcher:texture="@drawable/gridback" />
     <mobi.intuitit.android.mate.launcher.ScreenIndicator
         android:id="@+id/screen_indicator"
         android:layout_width="fill_parent"

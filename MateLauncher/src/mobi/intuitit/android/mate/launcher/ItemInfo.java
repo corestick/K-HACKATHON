@@ -29,14 +29,14 @@ import android.util.Log;
 /**
  * Represents an item in the launcher.
  */
-public class ItemInfo {
+class ItemInfo {
     
     static final int NO_ID = -1;
     
     /**
      * The id in the settings database for this item
      */
-    long id = NO_ID;
+    public long id = NO_ID;
     
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
@@ -44,7 +44,7 @@ public class ItemInfo {
      * {@link LauncherSettings.Favorites#ITEM_TYPE_USER_FOLDER}, or
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
      */
-    public int itemType;
+    int itemType;
     
     /**
      * The id of the container that holds this item. For the desktop, this will be 
@@ -104,12 +104,13 @@ public class ItemInfo {
      */
     boolean filtered;
     
-    int mobjectType = -1; // 0 = 가구, 1 = 아바타
-    int mobjectIcon = -1;
+    public int mobjectType = -1; // 0 = 가구, 1 = 아바타
+    public int mobjectIcon = -1;
+    public int reverseIcon = 0; // 1이면 반대이미지
     
     String contact_num;
     String contact_name;
-    int icon_mirror = 0; // 1이면 반대이미지
+    
 
     ItemInfo() {
     }
@@ -125,7 +126,7 @@ public class ItemInfo {
         container = info.container;
         mobjectType = info.mobjectType;
         mobjectIcon = info.mobjectIcon;
-        icon_mirror = info.icon_mirror;
+        reverseIcon = info.reverseIcon;
     }
 
     /**
@@ -151,7 +152,7 @@ public class ItemInfo {
     		
     		values.put(LauncherSettings.BaseLauncherColumns.CONTACT_NUM, contact_num);
     		values.put(LauncherSettings.BaseLauncherColumns.CONTACT_NAME, contact_name);
-    		values.put(LauncherSettings.BaseLauncherColumns.ICON_MIRROR, icon_mirror);
+    		values.put(LauncherSettings.BaseLauncherColumns.REVERSE_ICON, reverseIcon);
         }
     }
 

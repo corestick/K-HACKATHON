@@ -65,6 +65,7 @@ public class LocationHelper {
 		// Provider 생성
 		final String bestProvider = locationManager.getBestProvider(criteria,
 				true);
+		//에러
 		locationManager.requestLocationUpdates(bestProvider, 2000, 10,
 				mLocationListener);
 

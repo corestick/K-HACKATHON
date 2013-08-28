@@ -1,5 +1,7 @@
 package mobi.intuitit.android.mate.launcher;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -41,45 +43,60 @@ public class MobjectImageView extends ImageView {
 		// mBackground.setCallback(this);
 
 		ItemInfo info = (ItemInfo) getTag();
-//		Log.e("M-mirror", info.icon_mirror + "");
-		if (info.icon_mirror == 1) {
-			this.setBackgroundDrawable(flipDrawable(getResources()
-					.getDrawable(
-							MImageList.getInstance().getIcon(info.mobjectType,
-									info.mobjectIcon))));
-		} else {
+
+		if (info.reverseIcon == 0) {
 			this.setBackgroundResource(MImageList.getInstance().getIcon(
 					info.mobjectType, info.mobjectIcon));
+		} else {
+			Drawable d = getResources().getDrawable(
+					MImageList.getInstance().getIcon(info.mobjectType,
+							info.mobjectIcon));
+
+			this.setBackgroundDrawable(flipDrawable(d));
 		}
-		// this.setCompoundDrawablesWithIntrinsicBounds(0,
-		// MImageList.getInstance().getIcon(
-		// info.mobjectType, info.mobjectIcon), 0, 0);
+
+//		this.setCompoundDrawablesWithIntrinsicBounds(0, MImageList
+//				.getInstance().getIcon(info.mobjectType, info.mobjectIcon), 0,
+//				0);
 
 	}
-	
-	public void orginImg(){
-		ItemInfo info = (ItemInfo) getTag();
-		this.setBackgroundResource(MImageList.getInstance().getIcon(
-				info.mobjectType, info.mobjectIcon));
-	}
-	
-	Drawable flipDrawable(Drawable d)
-	{
-	    Matrix m = new Matrix();
-	    m.preScale(-1, 1);
-	    Bitmap src = ((BitmapDrawable) d).getBitmap();
-	    Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), m, false);
-	    dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
-	    return new BitmapDrawable(dst);
+
+	Drawable flipDrawable(Drawable d) {
+		Matrix m = new Matrix();
+		m.preScale(-1, 1);
+		Bitmap src = ((BitmapDrawable) d).getBitmap();
+		Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(),
+				src.getHeight(), m, false);
+		dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
+		return new BitmapDrawable(dst);
 	}
 
 	public void reverseImg() {
 
 		ItemInfo info = (ItemInfo) getTag();
-		Drawable d = getResources().getDrawable(MImageList.getInstance().getIcon(
-				info.mobjectType, info.mobjectIcon));		
 		
-		this.setBackgroundDrawable(flipDrawable(d));
+		if (info.reverseIcon == 0) {
+			info.reverseIcon = 1;
+			Drawable d = getResources().getDrawable(
+					MImageList.getInstance().getIcon(info.mobjectType,
+							info.mobjectIcon));
+
+			this.setBackgroundDrawable(flipDrawable(d));
+		} else {
+			info.reverseIcon = 0;
+			this.setBackgroundResource(MImageList.getInstance().getIcon(
+					info.mobjectType, info.mobjectIcon));
+		}
+		
+		this.setTag(info);
+		
+		MLayout mLayout = (MLayout) (this.getParent());
+		final ContentValues values = new ContentValues();
+		final ContentResolver cr = mLayout.mLauncher.getContentResolver();
+		values.put(LauncherSettings.Favorites.REVERSE_ICON,
+				info.reverseIcon);
+		cr.update(LauncherSettings.Favorites.getContentUri(
+				info.id, false), values, null, null);
 	}
 
 	// public void setTitle(boolean isModifyMode) {

@@ -3,7 +3,9 @@ package mobi.intuitit.android.mate.launcher;
 import java.util.ArrayList;
 
 import android.R.bool;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,14 +24,12 @@ public class MobjectView extends GridView implements
 	public int mObjectViewType = MGlobal.MDOCKBAR_MENU_HIDE;
 
 	MobjectAdapter mFurnitureAdapter;
-	MobjectAdapter mWallpaperAdapter;
-	MobjectAdapter mFlooringAdapter;
+	MobjectAdapter mBackgroundAdapter;
 	MobjectAdapter mAvatarAdapter;
 	MobjectAdapter mWidgetAdapter;
-	
+
 	ArrayList<Mobject> mFurnitureList;
-	ArrayList<Mobject> mWallpaperList;
-	ArrayList<Mobject> mFlooringList;
+	ArrayList<Mobject> mBackgroundList;
 	ArrayList<Mobject> mAvatarList;
 	ArrayList<Mobject> mWidgetList;
 
@@ -39,7 +39,7 @@ public class MobjectView extends GridView implements
 	private Paint mPaint;
 	private int mTextureWidth;
 	private int mTextureHeight;
-	
+
 	public MobjectView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -69,8 +69,7 @@ public class MobjectView extends GridView implements
 
 	public void initAdapter() {
 		mFurnitureList = new ArrayList<Mobject>();
-		mWallpaperList = new ArrayList<Mobject>();
-		mFlooringList = new ArrayList<Mobject>();
+		mBackgroundList = new ArrayList<Mobject>();
 		mAvatarList = new ArrayList<Mobject>();
 		mWidgetList = new ArrayList<Mobject>();
 
@@ -80,28 +79,19 @@ public class MobjectView extends GridView implements
 					MImageList.getInstance().furnitureList.get(i));
 			mObject.mobjectType = MGlobal.MOBJECTTYPE_FURNITURE;
 			mObject.mobjectIcon = i;
-						
+
 			mFurnitureList.add(mObject);
 		}
 		mFurnitureAdapter = new MobjectAdapter(mLauncher, mFurnitureList);
 
-		for (int i = 0; i < MImageList.getInstance().wallpaperList.size(); i++) {
+		for (int i = 0; i < MImageList.getInstance().backgroundList.size(); i++) {
 			Mobject mObject = new Mobject();
 			mObject.icon = getResources().getDrawable(
-					MImageList.getInstance().wallpaperList.get(i));
-			
-			mWallpaperList.add(mObject);
-		}
-		mWallpaperAdapter = new MobjectAdapter(mLauncher, mWallpaperList);
+					MImageList.getInstance().backgroundList.get(i));
 
-		for (int i = 0; i < MImageList.getInstance().flooringList.size(); i++) {
-			Mobject mObject = new Mobject();
-			mObject.icon = getResources().getDrawable(
-					MImageList.getInstance().flooringList.get(i));
-
-			mFlooringList.add(mObject);
+			mBackgroundList.add(mObject);
 		}
-		mFlooringAdapter = new MobjectAdapter(mLauncher, mFlooringList);
+		mBackgroundAdapter = new MobjectAdapter(mLauncher, mBackgroundList);
 
 		for (int i = 0; i < MImageList.getInstance().avatarList.size(); i++) {
 			Mobject mObject = new Mobject();
@@ -109,22 +99,23 @@ public class MobjectView extends GridView implements
 					MImageList.getInstance().avatarList.get(i));
 			mObject.mobjectType = MGlobal.MOBJECTTYPE_AVATAR;
 			mObject.mobjectIcon = i;
-			
+
 			mAvatarList.add(mObject);
 		}
 		mAvatarAdapter = new MobjectAdapter(mLauncher, mAvatarList);
-		
+
 		for (int i = 0; i < MImageList.getInstance().widgetList.size(); i++) {
 			Mobject mObject = new Mobject();
-			
-			mObject.icon = getResources().getDrawable(MImageList.getInstance().widgetList.get(i));
-		
+
+			mObject.icon = getResources().getDrawable(
+					MImageList.getInstance().widgetList.get(i));
+
 			mObject.mobjectType = MGlobal.MOBJECTTYPE_WIDGET;
 			mObject.mobjectIcon = i;
-						
+
 			mWidgetList.add(mObject);
 		}
-		
+
 		mWidgetAdapter = new MobjectAdapter(mLauncher, mWidgetList);
 	}
 
@@ -181,17 +172,17 @@ public class MobjectView extends GridView implements
 
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		
+
 		if (!view.isInTouchMode()) {
 			return false;
 		}
 		if (!isDraggable())
 			return false;
-			
-		Mobject app = (Mobject) parent.getItemAtPosition(position);			
+
+		Mobject app = (Mobject) parent.getItemAtPosition(position);
 		app = new Mobject(app);
 		mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
-		
+
 		mLauncher.closeObjectView();
 		return true;
 	}
@@ -200,25 +191,61 @@ public class MobjectView extends GridView implements
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
 
-		if (mObjectViewType == MGlobal.MDOCKBAR_MENU_WALLPAPER) {
-			Workspace mWorkspace = mLauncher.getWorkspace();
-			
-			MLayout mLayout = (MLayout) mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
-			mLayout.setWallpaperResIdx(arg2);			
-			SharedPreference.putSharedPreference(mLauncher, mWorkspace.getCurrentScreen() + "|w", arg2);
-			
-			hideMobjectView();
-		}
+		if (mObjectViewType == MGlobal.MDOCKBAR_MENU_BACKGROUND) {
+			final int SeletNum = arg2;
+			AlertDialog.Builder alart = new AlertDialog.Builder(mLauncher);
 
-		if (mObjectViewType == MGlobal.MDOCKBAR_MENU_FLOORING) {
-			Workspace mWorkspace = mLauncher.getWorkspace();
-			
-			MLayout mLayout = (MLayout) mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
-			mLayout.setFlooringResIdx(arg2);			
-			SharedPreference.putSharedPreference(mLauncher, mWorkspace.getCurrentScreen() + "|f", arg2);
-			
-			mLauncher.mMDockbar.invalidate(); // 독바 Refresh
-			hideMobjectView();
+			alart.setMessage("어디를 바꾸시겠습니까??")
+					.setCancelable(true)
+					.setPositiveButton("벽지",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// TODO Auto-generated method stub
+									Workspace mWorkspace = mLauncher
+											.getWorkspace();
+
+									MLayout mLayout = (MLayout) mWorkspace
+											.getChildAt(mWorkspace
+													.getCurrentScreen());
+									mLayout.setWallpaperResIdx(SeletNum);
+									SharedPreference.putSharedPreference(
+											mLauncher,
+											mWorkspace.getCurrentScreen()
+													+ "|w", SeletNum);
+									mLauncher.mMDockbar.invalidate(); // 독바
+																		// Refresh
+									hideMobjectView();
+									dialog.dismiss();
+								}
+							})
+					.setNegativeButton("바닥",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Workspace mWorkspace = mLauncher
+											.getWorkspace();
+
+									MLayout mLayout = (MLayout) mWorkspace
+											.getChildAt(mWorkspace
+													.getCurrentScreen());
+									mLayout.setFlooringResIdx(SeletNum);
+									SharedPreference.putSharedPreference(
+											mLauncher,
+											mWorkspace.getCurrentScreen()
+													+ "|f", SeletNum);
+
+									mLauncher.mMDockbar.invalidate(); // 독바
+																		// Refresh
+									hideMobjectView();
+									dialog.dismiss();
+								}
+							});
+			AlertDialog AD = alart.create();
+			AD.show();
 		}
 	}
 
@@ -232,11 +259,8 @@ public class MobjectView extends GridView implements
 		case MGlobal.MDOCKBAR_MENU_FURNITURE:
 			setAdapter(mFurnitureAdapter);
 			break;
-		case MGlobal.MDOCKBAR_MENU_WALLPAPER:
-			setAdapter(mWallpaperAdapter);
-			break;
-		case MGlobal.MDOCKBAR_MENU_FLOORING:
-			setAdapter(mFlooringAdapter);
+		case MGlobal.MDOCKBAR_MENU_BACKGROUND:
+			setAdapter(mBackgroundAdapter);
 			break;
 		case MGlobal.MDOCKBAR_MENU_AVATAR:
 			setAdapter(mAvatarAdapter);
@@ -255,8 +279,7 @@ public class MobjectView extends GridView implements
 		case MGlobal.MDOCKBAR_MENU_AVATAR:
 		case MGlobal.MDOCKBAR_MENU_WIDGET:
 			return true;
-		case MGlobal.MDOCKBAR_MENU_WALLPAPER:
-		case MGlobal.MDOCKBAR_MENU_FLOORING:
+		case MGlobal.MDOCKBAR_MENU_BACKGROUND:
 			return false;
 		}
 		return false;

@@ -22,7 +22,7 @@ import android.net.Uri;
 /**
  * Settings related utilities.
  */
-class LauncherSettings {
+public class LauncherSettings {
     static interface BaseLauncherColumns extends BaseColumns {
         /**
          * Descriptive name of the gesture that can be displayed to the user.
@@ -90,7 +90,7 @@ class LauncherSettings {
         static final String ICON = "icon";
         static final String CONTACT_NUM ="contact_num";
         static final String CONTACT_NAME ="contact_name";
-        static final String ICON_MIRROR ="icon_mirror";
+        static final String REVERSE_ICON ="reverseIcon";
         
     }
 
@@ -98,7 +98,7 @@ class LauncherSettings {
      * Favorites. When changing these values, be sure to update
      * {@link com.android.settings.LauncherAppWidgetBinder} as needed.
      */
-    static final class Favorites implements BaseLauncherColumns {
+    public static final class Favorites implements BaseLauncherColumns {
         /**
          * The content:// style URL for this table
          */
@@ -122,7 +122,7 @@ class LauncherSettings {
          *
          * @return The unique content URL for the specified row.
          */
-        static Uri getContentUri(long id, boolean notify) {
+        public static Uri getContentUri(long id, boolean notify) {
             return Uri.parse("content://" + LauncherProvider.AUTHORITY +
                     "/" + LauncherProvider.TABLE_FAVORITES + "/" + id + "?" +
                     LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
@@ -239,6 +239,6 @@ class LauncherSettings {
         
         static final String CONTACT_NUM = "contact_num";
         static final String CONTACT_NAME = "contact_name";
-        static final String ICON_MIRROR = "icon_mirror";
+        static final String REVERSE_ICON = "reverseIcon";
     }
 }

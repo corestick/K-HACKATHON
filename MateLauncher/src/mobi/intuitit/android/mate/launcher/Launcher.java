@@ -64,7 +64,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
@@ -83,7 +82,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
@@ -259,6 +257,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	private final Logger log4j = Logger.getLogger(Launcher.class);
 
+	static public int mWeather = MGlobal.WEATHER_SUNNY;
+
 	@Override
 	protected void onStart() {
 
@@ -287,12 +287,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			android.os.Debug.startMethodTracing("/sdcard/launcher");
 		}
 
-		// Log4j 설정 //
-		configureLogger();
-		
-		//위젯 서비스 시작
-		widgetStart();
-
 		checkForLocaleChange();
 		setWallpaperDimension();
 
@@ -312,6 +306,12 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		if (!mRestoring) {
 			startLoaders();
 		}
+
+		// Log4j 설정 //
+		// configureLogger();
+
+		// 위젯 서비스 시작
+		widgetStart();
 
 		// For handling default keys
 		mDefaultKeySsb = new SpannableStringBuilder();
@@ -711,26 +711,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				.findViewById(R.id.screen_indicator);
 		mIndicator.setWorkspace(workspace);
 
-		// mDrawer = (SlidingDrawer) dragLayer.findViewById(R.id.drawer);
-		// final SlidingDrawer drawer = mDrawer;
-		//
-		// mAllAppsGrid = (AllAppsGridView) drawer.getContent();
-		// final AllAppsGridView grid = mAllAppsGrid;
-
-		mDeleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
-
-		// mHandleView = (HandleView) dragLayer.findViewById(R.id.all_apps);
-		// mHandleView.setLauncher(this);
-		// mHandleIcon = (TransitionDrawable) mHandleView.getDrawable();
-		// mHandleIcon.setCrossFadeEnabled(true);
-
-		// drawer.lock();
-		// final DrawerManager drawerManager = new DrawerManager();
-
-		// drawer.setOnDrawerOpenListener(drawerManager);
-		// drawer.setOnDrawerCloseListener(drawerManager);
-		// drawer.setOnDrawerScrollListener(drawerManager);
-
 		mAllAppsGrid = (AllAppsGridView) dragLayer.findViewById(R.id.content);
 		final AllAppsGridView grid = mAllAppsGrid;
 		grid.setTextFilterEnabled(false);
@@ -751,6 +731,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		workspace.setLauncher(this);
 		workspace.initMScreens();
 
+		mDeleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
 		mDeleteZone.setLauncher(this);
 		mDeleteZone.setDragController(dragLayer);
 		mDeleteZone.setHandle(mMDockbar);
@@ -763,7 +744,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		dragLayer.setDragScoller(workspace);
 		dragLayer.setDragListener(mDeleteZone);
 
-		// mModifyHandler = new ModifyHandler(); // 수정모드에 쓰는 핸들러
 	}
 
 	/**
@@ -1274,7 +1254,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		unregisterReceiver(mCloseSystemDialogsReceiver);
 
 		mWorkspace.unregisterProvider();
-		
+
 		widgetStop();
 	}
 
@@ -2220,6 +2200,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					createThreadAndDialog();
 					break;
 				case MGlobal.MOBJECTTYPE_WIDGET:
+					((MobjectImageView) v).reverseImg();
 					break;
 				}
 			}
@@ -2385,8 +2366,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				MLayout mLayout = (MLayout) mObjectImageView.getParent();
 				mLayout.setVisibleStateSpeechBubble((MobjectImageView) mObjectImageView);
 			} else {
-				MLayout mLayout = (MLayout) v;
-				mLayout.setMobjectResolution(240, 400);
+				return true;
+				// MLayout mLayout = (MLayout) v;
+				// mLayout.setMobjectResolution(240, 400);
 			}
 		}
 
@@ -3300,24 +3282,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 						dialog.getWindow().setAttributes(params);
 						dialog.show();
 					} else if (position == 1) {
-						Object tag = v.getTag();
-
-						if (((Mobject) tag).icon_mirror == 0) {
-							MobjectImageView imgView = (MobjectImageView) v;
-							imgView.reverseImg();
-							((Mobject) tag).icon_mirror = 1;
-						} else {
-							MobjectImageView imgView = (MobjectImageView) v;
-							imgView.orginImg();
-							((Mobject) tag).icon_mirror = 0;
-						}
-						v.setTag(tag);
-						final ContentValues values = new ContentValues();
-						final ContentResolver cr = context.getContentResolver();
-						values.put(LauncherSettings.Favorites.ICON_MIRROR,
-								((Mobject) tag).icon_mirror);
-						cr.update(LauncherSettings.Favorites.getContentUri(
-								((Mobject) tag).id, false), values, null, null);
+						((MobjectImageView) v).reverseImg();
 					}
 					dismiss();
 				}
@@ -3646,40 +3611,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	// start widget service
 	public void widgetStart() {
-		Log.e("RRR", "widgetStart");
 		Intent intent = new Intent(this, WeatherWidgetService.class);
 		startService(intent);
-//		bindService(intent, connect, Context.BIND_AUTO_CREATE);
 	}
 
 	// stop widget service
 	public void widgetStop() {
 		Intent intent = new Intent(this, WeatherWidgetService.class);
 		stopService(intent);
-//		unbindService(connect);
 	}
-
-	public void widgetIconChange(long id) {
-		final ContentValues values = new ContentValues();
-		final ContentResolver cr = this.getContentResolver();
-		values.put(LauncherSettings.Favorites.MOBJECT_ICON, 0);
-		cr.update(LauncherSettings.Favorites.getContentUri(id, false), values,
-				null, null);
-		onStart();//화면 갱신
-	}
-	
-	public ServiceConnection connect = new ServiceConnection() {
-		
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			// TODO Auto-generated method stub
-			
-		}
-	};
 }

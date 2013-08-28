@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,112 +16,101 @@
 
 package mobi.intuitit.android.weatherwidget;
 
-
-
-import mobi.intuitit.android.mate.launcher.*;
+import mobi.intuitit.android.mate.launcher.Launcher;
+import mobi.intuitit.android.mate.launcher.MGlobal;
+import mobi.intuitit.android.mate.launcher.Workspace;
 import android.app.Service;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 /**
- * This is the service that provides the factory to be bound to the collection service.
+ * This is the service that provides the factory to be bound to the collection
+ * service.
  */
 public class WeatherWidgetService extends Service {
 	private WeatherDataManager mWeatherDataManager;
 	private Context mContext;
-	private int mAppWidgetId;
-	
-	private static HandlerThread sWorkerThread;
-	private static Handler sWorkerQueue;
-	private Handler mHandler;
-	
+
 	private LocationHelper lh;
+	public String weatherStr;
 
-	static {
-		sWorkerThread = new HandlerThread("WeatherActivity-worker");
-		sWorkerThread.start();
-		sWorkerQueue = new Handler(sWorkerThread.getLooper());
-	}
-	
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-	}
-	
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId){
-		Log.e("w22", "weee");
-		mContext = this.getApplicationContext();
-		mWeatherDataManager = WeatherDataManager.getInstance(mContext);
-		mAppWidgetId = intent.getIntExtra("id", 0);
-		
-		sWorkerQueue.post(new Runnable() {
-			public void run() {
-				LocationHelper lh = new LocationHelper(mContext);
+	class NewThread extends Thread {
+		WeatherWidgetService mParent;
+		private Handler mHandler;
 
-				while(true) {
-					try {
-						
-						lh.run();
-						Thread.sleep(1000);
-						Log.e("RRR", "Lat="+lh.getLat());
-						Log.e("RRR", "Lng="+lh.getLng());
-						
-						Location location = new Location(LocationManager.NETWORK_PROVIDER);
-						location.setLatitude(lh.getLat());
-						location.setLongitude(lh.getLng());
-		//				location.setLatitude(lh.getLat());
-		//				location.setLongitude(lh.getLng());
-						mWeatherDataManager.setLocation(location);
-						Log.e("CW", mWeatherDataManager.getCurrentWeather());
-		//				((Launcher)mContext).widgetIconChange(0);
-						
-						Workspace mWorkspace = Launcher.getWorkspace();
-						for(int i=0; i<mWorkspace.getChildCount(); i++) {
-							Log.e("RRR", "1------");
-							LayoutType layoutType = (LayoutType) mWorkspace.getChildAt(i);
-							if(layoutType instanceof MLayout) {
-								Log.e("RRR", "2------");
-								for(int j = 0; j < layoutType.getChildCount(); j++) {
-									Log.e("RRR", "3------");
-									if (layoutType.getChildAt(j) instanceof MobjectImageView)
-									{
-										MobjectImageView mObjectImageView = (MobjectImageView) layoutType.getChildAt(j);
-										ItemInfo itemInfo = (ItemInfo) mObjectImageView.getTag();
-										Log.e("RRR", "4------" + itemInfo.itemType);
-										if(itemInfo.itemType == MGlobal.MOBJECTTYPE_WIDGET) {
-											Log.e("RRR", "------");
-											mObjectImageView.setBackgroundColor(Color.BLUE);
-//											mObjectImageView.reverseImg();
-										}
-									}
-								}
-							}
-						}
-						
-						
-						Thread.sleep(10000);
-						
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+		public NewThread(WeatherWidgetService parent, Handler handler) {
+			mHandler = handler;
+			mParent = parent;
+		}
+
+		public void run() {
+			while (true) {
+				Message msg = new Message();
+				msg.what = 0;
+				mHandler.sendMessage(msg);
+				try {
+					Thread.sleep(1800000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-		});
-		return startId;		
+		}
+	}
+
+	Handler mHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			if (msg.what == 0) {
+				lh.run();
+
+				 Log.e("RRR", "Lat=" + lh.getLat());
+				 Log.e("RRR", "Lng=" + lh.getLng());
+
+				Location location = new Location(
+						LocationManager.NETWORK_PROVIDER);
+				location.setLatitude(lh.getLat());
+				location.setLongitude(lh.getLng());
+				mWeatherDataManager.setLocation(location);
+				weatherStr = mWeatherDataManager.getCurrentWeather();
+				weatherStr = "¸¼À½";
+				if (Launcher.getWorkspace() != null) {
+					if (weatherStr.equals("¸¼À½")) {
+						Launcher.mWeather = MGlobal.WEATHER_SUNNY;
+					} else if (weatherStr.equals("Èå¸²")
+							|| weatherStr.equals("±¸¸§ Á¶±Ý")
+							|| weatherStr.equals("±¸¸§ ¸¹À½")
+							|| weatherStr.equals("¾È°³")) {
+
+						Launcher.mWeather = MGlobal.WEATHER_CLOUD;
+
+					} else if (weatherStr.equals("ºñ")) {
+						Launcher.mWeather = MGlobal.WEATHER_RAIN;
+					} else if (weatherStr.equals("´«")) {
+						Launcher.mWeather = MGlobal.WEATHER_SNOW;
+					}
+
+					Workspace mWorkspace = Launcher.getWorkspace();
+					mWorkspace.setWidgetImg();
+
+				}
+			}
+		}
+	};
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		mContext = this.getApplicationContext();
+		mWeatherDataManager = WeatherDataManager.getInstance(mContext);
+		lh = new LocationHelper(mContext);
+		NewThread th = new NewThread(this, mHandler);
+		th.start();
+		return startId;
 	}
 
 	@Override

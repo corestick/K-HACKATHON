@@ -31,7 +31,7 @@ public class MLayout extends LayoutType {
 	private int mFlooringResIdx;
 	private int mWallpaperResIdx;
 
-	private Launcher mLauncher;
+	public Launcher mLauncher;
 	private int mScreenIdx;
 
 	private final int SPEECHBUBBLE_WIDTH = 160;
@@ -649,7 +649,8 @@ public class MLayout extends LayoutType {
 					mWallpaperResIdx);
 			SharedPreference.putSharedPreference(mLauncher, mScreenIdx + "|f",
 					mFlooringResIdx);
-
+			
+			//옵티 메모리 에러
 			Bitmap bitmap = Bitmap.createBitmap(this.getWidth(),
 					this.getHeight(), Bitmap.Config.ARGB_8888);
 
@@ -660,14 +661,15 @@ public class MLayout extends LayoutType {
 
 			// 벽지 그리기
 			mBack.setBitmap((BitmapDrawable) getResources().getDrawable(
-					MImageList.getInstance().wallpaperList
+					MImageList.getInstance().backgroundList
 							.get(mWallpaperResIdx)));
 			canvas.drawPath(mBack.getLeftPath(), mBack.getPaint());
 			canvas.drawPath(mBack.getRightPath(), mBack.getPaint());
 
 			// 바닥 그리기
 			mBack.setBitmap((BitmapDrawable) getResources().getDrawable(
-					MImageList.getInstance().flooringList.get(mFlooringResIdx)));
+					MImageList.getInstance().backgroundList
+							.get(mFlooringResIdx)));
 			canvas.drawPath(mBack.getBottomPath(), mBack.getPaint());
 
 			// 테투리 그리기
@@ -721,9 +723,9 @@ public class MLayout extends LayoutType {
 				mObjectTextView.layout(l, t, r, b);
 
 				Log.e("RRR", "==>" + l + ", " + t + ", " + r + ", " + b);
-//				mObjectTextView.invalidate();
-//				mObjectTextView.invalidate(l, t, r, b);
-				
+				// mObjectTextView.invalidate();
+				// mObjectTextView.invalidate(l, t, r, b);
+
 			}
 		}
 	}
