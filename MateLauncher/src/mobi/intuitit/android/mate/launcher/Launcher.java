@@ -256,7 +256,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private ModifyThread mModifyThread = null;
 
 	private final Logger log4j = Logger.getLogger(Launcher.class);
-	
+
 	static public int mWeather = MGlobal.WEATHER_SUNNY;
 
 	@Override
@@ -286,7 +286,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		if (PROFILE_STARTUP) {
 			android.os.Debug.startMethodTracing("/sdcard/launcher");
 		}
-	
 
 		checkForLocaleChange();
 		setWallpaperDimension();
@@ -298,19 +297,18 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		registerContentObservers();
 
 		mSavedState = savedInstanceState;
-		restoreState(mSavedState);	
-	
+		restoreState(mSavedState);
 
 		if (PROFILE_STARTUP) {
 			android.os.Debug.stopMethodTracing();
 		}
 
 		if (!mRestoring) {
-			startLoaders();			
+			startLoaders();
 		}
-		
+
 		// Log4j 설정 //
-//		configureLogger();
+		// configureLogger();
 
 		// 위젯 서비스 시작
 		widgetStart();
@@ -713,26 +711,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				.findViewById(R.id.screen_indicator);
 		mIndicator.setWorkspace(workspace);
 
-		// mDrawer = (SlidingDrawer) dragLayer.findViewById(R.id.drawer);
-		// final SlidingDrawer drawer = mDrawer;
-		//
-		// mAllAppsGrid = (AllAppsGridView) drawer.getContent();
-		// final AllAppsGridView grid = mAllAppsGrid;
-
-		mDeleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
-
-		// mHandleView = (HandleView) dragLayer.findViewById(R.id.all_apps);
-		// mHandleView.setLauncher(this);
-		// mHandleIcon = (TransitionDrawable) mHandleView.getDrawable();
-		// mHandleIcon.setCrossFadeEnabled(true);
-
-		// drawer.lock();
-		// final DrawerManager drawerManager = new DrawerManager();
-
-		// drawer.setOnDrawerOpenListener(drawerManager);
-		// drawer.setOnDrawerCloseListener(drawerManager);
-		// drawer.setOnDrawerScrollListener(drawerManager);
-
 		mAllAppsGrid = (AllAppsGridView) dragLayer.findViewById(R.id.content);
 		final AllAppsGridView grid = mAllAppsGrid;
 		grid.setTextFilterEnabled(false);
@@ -753,6 +731,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		workspace.setLauncher(this);
 		workspace.initMScreens();
 
+		mDeleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
 		mDeleteZone.setLauncher(this);
 		mDeleteZone.setDragController(dragLayer);
 		mDeleteZone.setHandle(mMDockbar);
@@ -765,7 +744,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		dragLayer.setDragScoller(workspace);
 		dragLayer.setDragListener(mDeleteZone);
 
-		// mModifyHandler = new ModifyHandler(); // 수정모드에 쓰는 핸들러
 	}
 
 	/**
@@ -2388,9 +2366,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				MLayout mLayout = (MLayout) mObjectImageView.getParent();
 				mLayout.setVisibleStateSpeechBubble((MobjectImageView) mObjectImageView);
 			} else {
-//				해상도 관련 테스트
-//				MLayout mLayout = (MLayout) v;
-//				mLayout.setMobjectResolution(240, 400);
+				return true;
+				// MLayout mLayout = (MLayout) v;
+				// mLayout.setMobjectResolution(240, 400);
 			}
 		}
 
@@ -3304,7 +3282,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 						dialog.getWindow().setAttributes(params);
 						dialog.show();
 					} else if (position == 1) {
-						Object tag = v.getTag();						
 						((MobjectImageView) v).reverseImg();
 					}
 					dismiss();

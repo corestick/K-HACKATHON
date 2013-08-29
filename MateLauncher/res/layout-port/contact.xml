@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingBottom="15dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp" >
+
+   <TextView
+       android:id="@+id/contact_name"
+       android:layout_width="140dp"
+       android:layout_height="wrap_content"
+       android:maxLines="1"
+       android:ellipsize="end"       
+       android:text=""
+       android:textSize="25dp" />
+   
+   <TextView
+       android:id="@+id/contact_phonenum"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="5dp"
+       android:text="01027480952"
+       android:textSize="20dp" />
+
+</LinearLayout>

@@ -28,7 +28,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 public class AllAppsGridView extends GridView implements
-		AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
+		AdapterView.OnItemClickListener,
 		DragSource {
 
 	private DragController mDragger;
@@ -71,7 +71,7 @@ public class AllAppsGridView extends GridView implements
 	@Override
 	protected void onFinishInflate() {
 		setOnItemClickListener(this);
-		setOnItemLongClickListener(this);
+//		setOnItemLongClickListener(this);
 	}
 
 	@Override
@@ -108,19 +108,19 @@ public class AllAppsGridView extends GridView implements
 
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-//		return false;
+		return false;
 
-		if (!view.isInTouchMode()) {
-			return false;
-		}
-
-		ItemInfo app = (ItemInfo) parent.getItemAtPosition(position);
-		app = new ItemInfo(app);
-
-		mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
-		mLauncher.closeAllApplications();
-
-		return true;
+//		if (!view.isInTouchMode()) {
+//			return false;
+//		}
+//
+//		ItemInfo app = (ItemInfo) parent.getItemAtPosition(position);
+//		app = new ItemInfo(app);
+//
+//		mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
+//		mLauncher.closeAllApplications();
+//
+//		return true;
 	}
 
 	public void setDragger(DragController dragger) {

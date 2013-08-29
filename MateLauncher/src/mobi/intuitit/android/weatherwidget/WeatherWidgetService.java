@@ -69,16 +69,15 @@ public class WeatherWidgetService extends Service {
 			if (msg.what == 0) {
 				lh.run();
 
-				// Log.e("RRR", "Lat=" + lh.getLat());
-				// Log.e("RRR", "Lng=" + lh.getLng());
+				 Log.e("RRR", "Lat=" + lh.getLat());
+				 Log.e("RRR", "Lng=" + lh.getLng());
 
 				Location location = new Location(
 						LocationManager.NETWORK_PROVIDER);
 				location.setLatitude(lh.getLat());
 				location.setLongitude(lh.getLng());
 				mWeatherDataManager.setLocation(location);
-				weatherStr = mWeatherDataManager.getCurrentWeather();
-
+				weatherStr = mWeatherDataManager.getCurrentWeather();				
 				if (Launcher.getWorkspace() != null) {
 					if (weatherStr.equals("¸¼À½")) {
 						Launcher.mWeather = MGlobal.WEATHER_SUNNY;

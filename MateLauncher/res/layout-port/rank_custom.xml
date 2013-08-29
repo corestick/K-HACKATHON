@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/rank_num"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_weight="0.30"
+        android:gravity="center"
+         android:textColor="#ffffffff"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/rank_photo"
+        android:layout_width="@dimen/profile_width"
+        android:layout_height="@dimen/profile_height"
+        android:layout_gravity="center_vertical"
+        android:background="#ff000000"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="58dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/rank_state"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="0.93"
+            android:text="하이요"
+            android:textColor="#ffffffff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/rank_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="0.97"
+            android:text="하이요"
+            android:textColor="#ffffffff"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -85,14 +85,13 @@ public class CurrentWeatherData {
 			case 9: return "비";
 			case 10: return "눈";
 			case 11: return "눈";
-			case 14: return "비";
 			case 15: return "안개";
 			case 17: return "박무";
 			case 18: return "안개";
 			default: return "";
 		}
 	}
-	
+	//에러
 	protected int getIcon() {
 		int icon = 0;
 		

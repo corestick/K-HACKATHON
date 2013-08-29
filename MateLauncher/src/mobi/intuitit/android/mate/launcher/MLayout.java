@@ -649,7 +649,8 @@ public class MLayout extends LayoutType {
 					mWallpaperResIdx);
 			SharedPreference.putSharedPreference(mLauncher, mScreenIdx + "|f",
 					mFlooringResIdx);
-
+			
+			//옵티 메모리 에러
 			Bitmap bitmap = Bitmap.createBitmap(this.getWidth(),
 					this.getHeight(), Bitmap.Config.ARGB_8888);
 
@@ -667,7 +668,8 @@ public class MLayout extends LayoutType {
 
 			// 바닥 그리기
 			mBack.setBitmap((BitmapDrawable) getResources().getDrawable(
-					MImageList.getInstance().backgroundList.get(mFlooringResIdx)));
+					MImageList.getInstance().backgroundList
+							.get(mFlooringResIdx)));
 			canvas.drawPath(mBack.getBottomPath(), mBack.getPaint());
 
 			// 테투리 그리기
