@@ -59,6 +59,7 @@
 
         <activity
             android:name="Launcher"
+            android:largeHeap="true"
             android:clearTaskOnLaunch="true"
             android:launchMode="singleTask"
             android:persistent="true"

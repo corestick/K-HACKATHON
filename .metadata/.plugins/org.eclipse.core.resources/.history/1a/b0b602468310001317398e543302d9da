@@ -53,7 +53,8 @@
         android:name="LauncherApplication"
         android:debuggable="true"
         android:icon="@drawable/icon_lp"
-        android:label="@string/application_name" >
+        android:label="@string/application_name"
+        android:largeHeap="true" >
 
         <!-- android:process="android.process.acore" -->
 
