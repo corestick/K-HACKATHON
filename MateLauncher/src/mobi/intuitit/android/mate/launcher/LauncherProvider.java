@@ -18,16 +18,10 @@ package mobi.intuitit.android.mate.launcher;
 
 import static android.util.Log.w;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import mobi.intuitit.android.internal.utils.XmlUtils;
 import mobi.intuitit.android.mate.launcher.LauncherSettings.Favorites;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.appwidget.AppWidgetHost;
 import android.content.ComponentName;
 import android.content.ContentProvider;
@@ -40,7 +34,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -50,9 +43,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Xml;
 
 public class LauncherProvider extends ContentProvider {
 	private static final String LOG_TAG = "LauncherProvider";
@@ -249,7 +240,8 @@ public class LauncherProvider extends ContentProvider {
 					+ "iconPackage TEXT," + "iconResource TEXT," + "icon BLOB,"
 					+ "uri TEXT," + "displayMode INTEGER, "
 					+ "mobjectType INTEGER, " + "mobjectIcon INTEGER,"
-					+ "contact_num TEXT,"+ "contact_name TEXT," + "reverseIcon INTEGER" + ");");
+					+ "contact_num TEXT," + "contact_name TEXT,"
+					+ "reverseIcon INTEGER" + ");");
 
 			db.execSQL("CREATE TABLE gestures (" + "_id INTEGER PRIMARY KEY,"
 					+ "title TEXT," + "intent TEXT," + "itemType INTEGER,"
@@ -264,7 +256,7 @@ public class LauncherProvider extends ContentProvider {
 
 			if (!convertDatabase(db)) {
 				// Populate favorites table with initial favorites
-				// loadFavorites(db);
+				 loadFavorites(db);
 			}
 		}
 
@@ -573,69 +565,73 @@ public class LauncherProvider extends ContentProvider {
 		 * @param db
 		 *            The database to write the values into
 		 */
-		private int loadFavorites(SQLiteDatabase db) {
-			Intent intent = new Intent(Intent.ACTION_MAIN, null);
-			intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		private void loadFavorites(SQLiteDatabase db) {
 			ContentValues values = new ContentValues();
-
-			PackageManager packageManager = mContext.getPackageManager();
-			int i = 0;
-			try {
-				XmlResourceParser parser = mContext.getResources().getXml(
-						R.xml.default_workspace);
-				AttributeSet attrs = Xml.asAttributeSet(parser);
-				XmlUtils.beginDocument(parser, TAG_FAVORITES);
-
-				final int depth = parser.getDepth();
-
-				int type;
-				while (((type = parser.next()) != XmlPullParser.END_TAG || parser
-						.getDepth() > depth)
-						&& type != XmlPullParser.END_DOCUMENT) {
-
-					if (type != XmlPullParser.START_TAG) {
-						continue;
-					}
-
-					boolean added = false;
-					final String name = parser.getName();
-
-					TypedArray a = mContext.obtainStyledAttributes(attrs,
-							R.styleable.Favorite);
-
-					values.clear();
-					values.put(LauncherSettings.Favorites.CONTAINER,
-							LauncherSettings.Favorites.CONTAINER_DESKTOP);
-					values.put(LauncherSettings.Favorites.SCREEN,
-							a.getString(R.styleable.Favorite_screen));
-					values.put(LauncherSettings.Favorites.CELLX,
-							a.getString(R.styleable.Favorite_x));
-					values.put(LauncherSettings.Favorites.CELLY,
-							a.getString(R.styleable.Favorite_y));
-
-					if (TAG_FAVORITE.equals(name)) {
-						added = addAppShortcut(db, values, a, packageManager,
-								intent);
-					} else if (TAG_SEARCH.equals(name)) {
-						added = addSearchWidget(db, values);
-					} else if (TAG_CLOCK.equals(name)) {
-						added = addClockWidget(db, values);
-					} else if (TAG_SHORTCUT.equals(name)) {
-						added = addShortcut(db, values, a);
-					}
-
-					if (added)
-						i++;
-
-					a.recycle();
-				}
-			} catch (XmlPullParserException e) {
-				Log.w(LOG_TAG, "Got exception parsing favorites.", e);
-			} catch (IOException e) {
-				Log.w(LOG_TAG, "Got exception parsing favorites.", e);
-			}
-
-			return i;
+			addAvatar(db, values);
+			addTv(db, values);
+			addWidget(db, values);
+			// Intent intent = new Intent(Intent.ACTION_MAIN, null);
+			// intent.addCategory(Intent.CATEGORY_LAUNCHER);
+			//
+			//
+			// PackageManager packageManager = mContext.getPackageManager();
+			// int i = 0;
+			// try {
+			// XmlResourceParser parser = mContext.getResources().getXml(
+			// R.xml.default_workspace);
+			// AttributeSet attrs = Xml.asAttributeSet(parser);
+			// XmlUtils.beginDocument(parser, TAG_FAVORITES);
+			//
+			// final int depth = parser.getDepth();
+			//
+			// int type;
+			// while (((type = parser.next()) != XmlPullParser.END_TAG || parser
+			// .getDepth() > depth)
+			// && type != XmlPullParser.END_DOCUMENT) {
+			//
+			// if (type != XmlPullParser.START_TAG) {
+			// continue;
+			// }
+			//
+			// boolean added = false;
+			// final String name = parser.getName();
+			//
+			// TypedArray a = mContext.obtainStyledAttributes(attrs,
+			// R.styleable.Favorite);
+			//
+			// values.clear();
+			// values.put(LauncherSettings.Favorites.CONTAINER,
+			// LauncherSettings.Favorites.CONTAINER_DESKTOP);
+			// values.put(LauncherSettings.Favorites.SCREEN,
+			// a.getString(R.styleable.Favorite_screen));
+			// values.put(LauncherSettings.Favorites.CELLX,
+			// a.getString(R.styleable.Favorite_x));
+			// values.put(LauncherSettings.Favorites.CELLY,
+			// a.getString(R.styleable.Favorite_y));
+			//
+			// if (TAG_FAVORITE.equals(name)) {
+			// added = addAppShortcut(db, values, a, packageManager,
+			// intent);
+			// } else if (TAG_SEARCH.equals(name)) {
+			// added = addSearchWidget(db, values);
+			// } else if (TAG_CLOCK.equals(name)) {
+			// added = addClockWidget(db, values);
+			// } else if (TAG_SHORTCUT.equals(name)) {
+			// added = addShortcut(db, values, a);
+			// }
+			//
+			// if (added)
+			// i++;
+			//
+			// a.recycle();
+			// }
+			// } catch (XmlPullParserException e) {
+			// Log.w(LOG_TAG, "Got exception parsing favorites.", e);
+			// } catch (IOException e) {
+			// Log.w(LOG_TAG, "Got exception parsing favorites.", e);
+			// }
+			//
+			// return i;
 		}
 
 		private boolean addAppShortcut(SQLiteDatabase db, ContentValues values,
@@ -663,6 +659,45 @@ public class LauncherProvider extends ContentProvider {
 				return false;
 			}
 			return true;
+		}
+
+		public void addAvatar(SQLiteDatabase db, ContentValues values) {			
+			values.put(LauncherSettings.Favorites.CONTAINER, -100);
+			values.put(LauncherSettings.Favorites.SCREEN, 1);
+			values.put(LauncherSettings.Favorites.CELLX, (int)Launcher.getWorkspace().getChildAt(0).getWidth()/2);
+			values.put(LauncherSettings.Favorites.CELLY, (int)Launcher.getWorkspace().getChildAt(0).getHeight()/2);
+			values.put(LauncherSettings.Favorites.SPANX, 1);
+			values.put(LauncherSettings.Favorites.SPANY, 1);
+			values.put(LauncherSettings.Favorites.MOBJECT_TYPE, 1);
+			values.put(LauncherSettings.Favorites.MOBJECT_ICON, 1);
+			values.put(LauncherSettings.BaseLauncherColumns.REVERSE_ICON, 0);
+			db.insert(TABLE_FAVORITES, null, values);
+		}
+		
+		public void addTv(SQLiteDatabase db, ContentValues values) {			
+			values.put(LauncherSettings.Favorites.CONTAINER, -100);
+			values.put(LauncherSettings.Favorites.SCREEN, 1);
+			values.put(LauncherSettings.Favorites.CELLX, (int)Launcher.getWorkspace().getChildAt(0).getWidth()/10);
+			values.put(LauncherSettings.Favorites.CELLY, (int)Launcher.getWorkspace().getChildAt(0).getHeight()/3);
+			values.put(LauncherSettings.Favorites.SPANX, 1);
+			values.put(LauncherSettings.Favorites.SPANY, 1);
+			values.put(LauncherSettings.Favorites.MOBJECT_TYPE, 0);
+			values.put(LauncherSettings.Favorites.MOBJECT_ICON, 6);
+			values.put(LauncherSettings.BaseLauncherColumns.REVERSE_ICON, 0);
+			db.insert(TABLE_FAVORITES, null, values);
+		}
+		
+		public void addWidget(SQLiteDatabase db, ContentValues values) {			
+			values.put(LauncherSettings.Favorites.CONTAINER, -100);
+			values.put(LauncherSettings.Favorites.SCREEN, 1);
+			values.put(LauncherSettings.Favorites.CELLX, (int)2*(Launcher.getWorkspace().getChildAt(0).getWidth()/3));
+			values.put(LauncherSettings.Favorites.CELLY, (int)Launcher.getWorkspace().getChildAt(0).getHeight()/10);
+			values.put(LauncherSettings.Favorites.SPANX, 1);
+			values.put(LauncherSettings.Favorites.SPANY, 1);
+			values.put(LauncherSettings.Favorites.MOBJECT_TYPE, 2);
+			values.put(LauncherSettings.Favorites.MOBJECT_ICON, 0);
+			values.put(LauncherSettings.BaseLauncherColumns.REVERSE_ICON, 1);
+			db.insert(TABLE_FAVORITES, null, values);
 		}
 
 		private boolean addShortcut(SQLiteDatabase db, ContentValues values,

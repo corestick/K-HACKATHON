@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -28,8 +29,7 @@ public class MLayout extends LayoutType {
 
 	int[] mCellXY = new int[2];
 
-	private int mFlooringResIdx;
-	private int mWallpaperResIdx;
+	private int mBackgroundResIdx;
 
 	public Launcher mLauncher;
 	private int mScreenIdx;
@@ -619,13 +619,12 @@ public class MLayout extends LayoutType {
 		this.mScreenIdx = screenIdx;
 	}
 
-	public void setWallpaperResIdx(int idx) {
-		this.mWallpaperResIdx = idx;
-		drawMBackground();
+	public int getWallpaperResIdx() {
+		return this.mBackgroundResIdx;
 	}
-
-	public void setFlooringResIdx(int idx) {
-		this.mFlooringResIdx = idx;
+	
+	public void setBackgroundResIdx(int idx) {
+		this.mBackgroundResIdx = idx;
 		drawMBackground();
 	}
 
@@ -633,12 +632,7 @@ public class MLayout extends LayoutType {
 		int wIdx = SharedPreference.getIntSharedPreference(mLauncher,
 				mScreenIdx + "|w");
 		wIdx = wIdx > 0 ? wIdx : 0;
-		this.mWallpaperResIdx = wIdx;
-
-		int fIdx = SharedPreference.getIntSharedPreference(mLauncher,
-				mScreenIdx + "|f");
-		fIdx = fIdx > 0 ? fIdx : 0;
-		this.mFlooringResIdx = fIdx;
+		this.mBackgroundResIdx = wIdx;
 
 		drawMBackground();
 	}
@@ -646,45 +640,13 @@ public class MLayout extends LayoutType {
 	public void drawMBackground() {
 		if (this.getWidth() > 0 && this.getHeight() > 0) {
 			SharedPreference.putSharedPreference(mLauncher, mScreenIdx + "|w",
-					mWallpaperResIdx);
-			SharedPreference.putSharedPreference(mLauncher, mScreenIdx + "|f",
-					mFlooringResIdx);
+					mBackgroundResIdx);
 			
-			//옵티 메모리 에러
-			Bitmap bitmap = Bitmap.createBitmap(this.getWidth(),
-					this.getHeight(), Bitmap.Config.ARGB_8888);
+			Drawable dr = MBackground.getInstance().getBackground(
+					this.getWidth(), this.getHeight(), mBackgroundResIdx);
 
-			Canvas canvas = new Canvas(bitmap);
-
-			MBackground mBack = new MBackground(canvas.getWidth(),
-					canvas.getHeight());
-
-			// 벽지 그리기
-			mBack.setBitmap((BitmapDrawable) getResources().getDrawable(
-					MImageList.getInstance().backgroundList
-							.get(mWallpaperResIdx)));
-			canvas.drawPath(mBack.getLeftPath(), mBack.getPaint());
-			canvas.drawPath(mBack.getRightPath(), mBack.getPaint());
-
-			// 바닥 그리기
-			mBack.setBitmap((BitmapDrawable) getResources().getDrawable(
-					MImageList.getInstance().backgroundList
-							.get(mFlooringResIdx)));
-			canvas.drawPath(mBack.getBottomPath(), mBack.getPaint());
-
-			// 테투리 그리기
-			canvas.drawPath(mBack.getStrokePath(), mBack.getStrokePaint());
-
-			this.setBackgroundDrawable((Drawable) (new BitmapDrawable(bitmap)));
+			this.setBackgroundDrawable(dr);
 		}
-	}
-
-	public int getWallpaperResIdx() {
-		return this.mWallpaperResIdx;
-	}
-
-	public int getFlooringResIdx() {
-		return this.mFlooringResIdx;
 	}
 
 	public void setMobjectResolution(int argWidth, int argHeight) {

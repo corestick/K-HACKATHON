@@ -192,60 +192,21 @@ public class MobjectView extends GridView implements
 		// TODO Auto-generated method stub
 
 		if (mObjectViewType == MGlobal.MDOCKBAR_MENU_BACKGROUND) {
-			final int SeletNum = arg2;
-			AlertDialog.Builder alart = new AlertDialog.Builder(mLauncher);
+			
+			Workspace mWorkspace = mLauncher
+					.getWorkspace();
 
-			alart.setMessage("어디를 바꾸시겠습니까??")
-					.setCancelable(true)
-					.setPositiveButton("벽지",
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// TODO Auto-generated method stub
-									Workspace mWorkspace = mLauncher
-											.getWorkspace();
-
-									MLayout mLayout = (MLayout) mWorkspace
-											.getChildAt(mWorkspace
-													.getCurrentScreen());
-									mLayout.setWallpaperResIdx(SeletNum);
-									SharedPreference.putSharedPreference(
-											mLauncher,
-											mWorkspace.getCurrentScreen()
-													+ "|w", SeletNum);
-									mLauncher.mMDockbar.invalidate(); // 독바
-																		// Refresh
-									hideMobjectView();
-									dialog.dismiss();
-								}
-							})
-					.setNegativeButton("바닥",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									Workspace mWorkspace = mLauncher
-											.getWorkspace();
-
-									MLayout mLayout = (MLayout) mWorkspace
-											.getChildAt(mWorkspace
-													.getCurrentScreen());
-									mLayout.setFlooringResIdx(SeletNum);
-									SharedPreference.putSharedPreference(
-											mLauncher,
-											mWorkspace.getCurrentScreen()
-													+ "|f", SeletNum);
-
-									mLauncher.mMDockbar.invalidate(); // 독바
-																		// Refresh
-									hideMobjectView();
-									dialog.dismiss();
-								}
-							});
-			AlertDialog AD = alart.create();
-			AD.show();
+			MLayout mLayout = (MLayout) mWorkspace
+					.getChildAt(mWorkspace
+							.getCurrentScreen());
+			mLayout.setBackgroundResIdx(arg2);
+			SharedPreference.putSharedPreference(
+					mLauncher,
+					mWorkspace.getCurrentScreen()
+							+ "|w", arg2);
+			mLauncher.mMDockbar.invalidate(); // 독바
+			
+			hideMobjectView();
 		}
 	}
 

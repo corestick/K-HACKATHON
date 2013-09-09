@@ -711,6 +711,26 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				.findViewById(R.id.screen_indicator);
 		mIndicator.setWorkspace(workspace);
 
+		// mDrawer = (SlidingDrawer) dragLayer.findViewById(R.id.drawer);
+		// final SlidingDrawer drawer = mDrawer;
+		//
+		// mAllAppsGrid = (AllAppsGridView) drawer.getContent();
+		// final AllAppsGridView grid = mAllAppsGrid;
+
+		mDeleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
+
+		// mHandleView = (HandleView) dragLayer.findViewById(R.id.all_apps);
+		// mHandleView.setLauncher(this);
+		// mHandleIcon = (TransitionDrawable) mHandleView.getDrawable();
+		// mHandleIcon.setCrossFadeEnabled(true);
+
+		// drawer.lock();
+		// final DrawerManager drawerManager = new DrawerManager();
+
+		// drawer.setOnDrawerOpenListener(drawerManager);
+		// drawer.setOnDrawerCloseListener(drawerManager);
+		// drawer.setOnDrawerScrollListener(drawerManager);
+
 		mAllAppsGrid = (AllAppsGridView) dragLayer.findViewById(R.id.content);
 		final AllAppsGridView grid = mAllAppsGrid;
 		grid.setTextFilterEnabled(false);
@@ -731,7 +751,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		workspace.setLauncher(this);
 		workspace.initMScreens();
 
-		mDeleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
 		mDeleteZone.setLauncher(this);
 		mDeleteZone.setDragController(dragLayer);
 		mDeleteZone.setHandle(mMDockbar);
@@ -744,6 +763,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		dragLayer.setDragScoller(workspace);
 		dragLayer.setDragListener(mDeleteZone);
 
+		// mModifyHandler = new ModifyHandler(); // 수정모드에 쓰는 핸들러
 	}
 
 	/**
@@ -2157,9 +2177,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 * @param v
 	 *            The view representing the clicked shortcut.
 	 */
-	public void onClick(View v) {
+	public void onClick(final View v) {
 		if (modifyMode == false) {
-			Object tag = v.getTag();
+			final Object tag = v.getTag();
 			if (tag instanceof ApplicationInfo) {
 				// Open shortcut
 				final Intent intent = ((ApplicationInfo) tag).intent;
@@ -2175,10 +2195,85 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			} else if (tag instanceof Mobject) {
 				if (((Mobject) tag).mobjectType == MGlobal.MOBJECTTYPE_FURNITURE) {
 					final Intent intent = ((Mobject) tag).intent;
+					if (intent == null) {
+						// Toast.makeText(this, "어플리케이션을 매칭해주세요.",
+						// Toast.LENGTH_SHORT).show();
+
+						AlertDialog.Builder alart = new AlertDialog.Builder(
+								mLauncher);
+
+						alart.setMessage("어플리케이션을 매칭하시겠습니까??")
+								.setCancelable(true)
+								.setPositiveButton("예",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												dialog.dismiss();
+												Object tag = v.getTag();
+												AppList_dialog appDialog = new AppList_dialog(
+														Launcher.this, tag);
+												appDialog.setCancelable(true);
+												android.view.WindowManager.LayoutParams params = appDialog
+														.getWindow()
+														.getAttributes();
+												params.width = LayoutParams.FILL_PARENT;
+												params.height = LayoutParams.FILL_PARENT;
+												appDialog.getWindow()
+														.setAttributes(params);
+												appDialog.show();
+											}
+										})
+								.setNegativeButton("아니오",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												dialog.dismiss();
+											}
+										});
+						AlertDialog AD = alart.create();
+						AD.show();
+						return;
+					}
 					startActivitySafely(intent);
 				} else {
-					MLayout mLayout = (MLayout) v.getParent();
-					mLayout.setVisibleStateMavatarMenu((MobjectImageView) v);
+					if (((Mobject) tag).contact_num == null) {
+						AlertDialog.Builder alart = new AlertDialog.Builder(
+								mLauncher);
+
+						alart.setMessage("연락처를 매칭하시겠습니까??")
+								.setCancelable(true)
+								.setPositiveButton("예",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												dialog.dismiss();
+												SelectView = v;
+												clickedInfo = tag;
+												createThreadAndDialog();												
+											}
+										})
+								.setNegativeButton("아니오",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												dialog.dismiss();
+											}
+										});
+						AlertDialog AD = alart.create();
+						AD.show();
+						return;
+					} else {
+						MLayout mLayout = (MLayout) v.getParent();
+						mLayout.setVisibleStateMavatarMenu((MobjectImageView) v);
+					}
 				}
 			}
 		} else {
@@ -2241,10 +2336,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	}
 
 	void startActivitySafely(Intent intent) {
-		if (intent == null) {
-			Toast.makeText(this, "어플리케이션을 매칭해주세요.", Toast.LENGTH_SHORT).show();
-			return;
-		}
+
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		try {
 			startActivity(intent);
@@ -2366,7 +2458,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				MLayout mLayout = (MLayout) mObjectImageView.getParent();
 				mLayout.setVisibleStateSpeechBubble((MobjectImageView) mObjectImageView);
 			} else {
-				return true;
+				// 해상도 관련 테스트
 				// MLayout mLayout = (MLayout) v;
 				// mLayout.setMobjectResolution(240, 400);
 			}

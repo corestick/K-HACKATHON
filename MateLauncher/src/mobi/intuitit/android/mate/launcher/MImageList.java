@@ -38,18 +38,18 @@ public class MImageList {
 		backgroundList.add(R.drawable.m_wall_01);
 		backgroundList.add(R.drawable.m_wall_02);
 		backgroundList.add(R.drawable.m_wall_03);
-		backgroundList.add(R.drawable.m_wall_04);
-		backgroundList.add(R.drawable.m_wall_05);
-		backgroundList.add(R.drawable.m_wall_06);
-		backgroundList.add(R.drawable.m_wall_07);
-		backgroundList.add(R.drawable.m_wall_08);
-		backgroundList.add(R.drawable.m_wall_09);
-		backgroundList.add(R.drawable.m_wall_10);
-		backgroundList.add(R.drawable.m_wall_11);
-		backgroundList.add(R.drawable.m_wall_12);
-		backgroundList.add(R.drawable.m_wall_13);
-		backgroundList.add(R.drawable.m_wall_14);
-		backgroundList.add(R.drawable.m_wall_15);	
+//		backgroundList.add(R.drawable.m_wall_04);
+//		backgroundList.add(R.drawable.m_wall_05);
+//		backgroundList.add(R.drawable.m_wall_06);
+//		backgroundList.add(R.drawable.m_wall_07);
+//		backgroundList.add(R.drawable.m_wall_08);
+//		backgroundList.add(R.drawable.m_wall_09);
+//		backgroundList.add(R.drawable.m_wall_10);
+//		backgroundList.add(R.drawable.m_wall_11);
+//		backgroundList.add(R.drawable.m_wall_12);
+//		backgroundList.add(R.drawable.m_wall_13);
+//		backgroundList.add(R.drawable.m_wall_14);
+//		backgroundList.add(R.drawable.m_wall_15);
 	}
 
 	private void initAvatar() {
